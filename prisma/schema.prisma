@@ -3,9 +3,11 @@ generator client {
 }
 
 datasource db {
-  // SQLite en dev pour tourner sans base externe. Pour la prod: passer
-  // provider à "postgresql" et DATABASE_URL vers l'instance Postgres.
-  provider = "sqlite"
+  // Postgres : fonctionne aussi bien en développement (base gratuite type
+  // Neon/Vercel Postgres) qu'en production sur un hébergeur serverless
+  // (Vercel...) où le système de fichiers n'est pas persistant — un
+  // fichier SQLite y serait réinitialisé à chaque déploiement.
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

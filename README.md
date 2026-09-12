@@ -41,30 +41,68 @@ quotidiens, et de demander des exercices sur-mesure validés par une
 ## Stack
 
 - Next.js 16 (App Router, Turbopack) + TypeScript, Tailwind CSS v4
-- Prisma + SQLite en développement (passer le `provider` à `postgresql`
-  dans `prisma/schema.prisma` pour la production)
+- Prisma + Postgres (dev et prod — nécessaire car le site est destiné à
+  être déployé sur un hébergeur serverless, où un fichier SQLite ne
+  persisterait pas entre deux déploiements)
 - Stripe Checkout (mode abonnement) + webhook pour la synchronisation du
   statut d'abonnement
 - `bcryptjs` pour le hash des mots de passe
 - `proxy.ts` (remplace `middleware.ts` depuis Next 16) : garde de route
   serveur pour les pages qui nécessitent une connexion
 
-## Développement local
+## Mettre le site en ligne sans rien installer (recommandé)
+
+Cette méthode se fait entièrement dans le navigateur, sans terminal ni
+Node.js sur ton ordinateur — via [Vercel](https://vercel.com), qui héberge
+gratuitement ce type de site.
+
+1. **Créer un compte Vercel** sur [vercel.com](https://vercel.com) en
+   cliquant sur "Continue with GitHub" — utilise le même compte GitHub que
+   celui qui possède ce dépôt (`Loanyou85`).
+2. Sur le tableau de bord Vercel, cliquer **Add New...** → **Project**,
+   puis choisir d'importer le dépôt `Loanyou85/Clebo-`. Next.js est
+   détecté automatiquement, aucune configuration à toucher ici.
+3. **Avant de cliquer sur Deploy**, dérouler **Environment Variables** et
+   ajouter au minimum :
+   - `COOKIE_SIGNING_SECRET` → n'importe quelle longue suite de
+     caractères aléatoires (ex : tape au hasard sur le clavier, 40
+     caractères).
+   - `NEXT_PUBLIC_SITE_URL` → laisse vide pour l'instant, tu la
+     complèteras à l'étape 5 avec l'adresse donnée par Vercel.
+   - Les 4 variables Stripe peuvent rester vides pour l'instant : le site
+     fonctionnera entièrement sauf le bouton de paiement (à activer plus
+     tard, voir "Configuration Stripe" ci-dessous).
+4. **Créer la base de données** : dans le même écran (ou dans l'onglet
+   **Storage** du projet une fois créé), cliquer **Create Database** →
+   choisir **Postgres** (propulsé par Neon) → suivre les étapes puis
+   **Connect** au projet. Vercel ajoute automatiquement la variable
+   `DATABASE_URL` pour toi — rien à copier-coller.
+5. Cliquer **Deploy**. Après quelques minutes, Vercel donne une adresse du
+   type `https://clebo-xxxx.vercel.app` : c'est ton site, en ligne,
+   accessible par n'importe qui. Retourne dans **Settings → Environment
+   Variables**, mets à jour `NEXT_PUBLIC_SITE_URL` avec cette adresse, puis
+   clique **Redeploy** (onglet **Deployments** → "..." sur le dernier
+   déploiement → **Redeploy**).
+
+À chaque déploiement, le site crée/synchronise automatiquement ses tables
+et recharge les races/exercices de base (voir le script `build` dans
+`package.json`) — aucune commande à taper.
+
+Un compte administrateur est créé automatiquement :
+`admin@clebo.fr` / `ClangeMoiVite123!` (variables `ADMIN_EMAIL` /
+`ADMIN_PASSWORD` pour personnaliser — **à changer avant d'avoir de vrais
+clients**).
+
+## Développement local (pour un développeur)
 
 ```bash
 npm install
-cp .env.example .env.local   # puis remplir les valeurs (voir ci-dessous)
-cp .env.local .env           # Prisma CLI lit .env, pas .env.local
-npm run setup                # db push + génération des images placeholder + seed
-npm run dev
+cp .env.example .env.local   # puis remplir DATABASE_URL avec une base
+                              # Postgres (ex: gratuite sur neon.tech)
+npm run dev                  # configure le reste automatiquement
 ```
 
 Ouvrir [http://localhost:3000](http://localhost:3000).
-
-Un compte administrateur est créé automatiquement par le seed :
-`admin@clebo.fr` / `ClangeMoiVite123!` (variables `ADMIN_EMAIL` /
-`ADMIN_PASSWORD` pour personnaliser — **à changer avant toute mise en
-production**).
 
 ## Variables d'environnement
 
@@ -72,7 +110,7 @@ Voir `.env.example`.
 
 | Variable | Description |
 | --- | --- |
-| `DATABASE_URL` | Connexion base de données (`file:./dev.db` en dev, URL Postgres en prod) |
+| `DATABASE_URL` | Connexion à la base Postgres (fournie automatiquement par Vercel si tu utilises Vercel Postgres) |
 | `COOKIE_SIGNING_SECRET` | Secret de signature du cookie de session (ex: `openssl rand -hex 32`) |
 | `STRIPE_SECRET_KEY` | Dashboard Stripe → Developers → API keys |
 | `STRIPE_WEBHOOK_SECRET` | Créé à l'étape "Webhook" ci-dessous |
@@ -110,6 +148,9 @@ Voir `.env.example`.
 - Les images de races/exercices sont des illustrations placeholder
   générées par code (`scripts/generate-*-images.ts`), à remplacer par de
   vraies photos en gardant le même chemin de fichier.
-- Base de données SQLite en développement : passer à Postgres pour la
-  production (un seul champ `provider` à changer dans
-  `prisma/schema.prisma`).
+- Le script `build` exécute `prisma db push --accept-data-loss` à chaque
+  déploiement pour rester simple pendant le développement initial (pas de
+  système de migrations à gérer manuellement). À remplacer par de vraies
+  migrations Prisma (`prisma migrate deploy`) une fois le site en
+  production avec de vrais clients, pour éviter tout risque de perte de
+  données sur un changement de schéma.

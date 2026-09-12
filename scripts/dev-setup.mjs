@@ -1,7 +1,9 @@
-// Lancé automatiquement avant `npm run dev` (hook npm "predev"), pour que
-// `npm install && npm run dev` fonctionne dès le premier essai, sans étape
-// manuelle oubliée (.env manquant, base de données jamais créée...) qui
-// provoquerait un écran blanc silencieux.
+// Lancé automatiquement avant `npm run dev` (hook npm "predev").
+// Le projet utilise Postgres (nécessaire pour le déploiement en
+// production, voir prisma/schema.prisma) : contrairement à SQLite, une
+// vraie base doit exister avant de pouvoir développer localement. Ce
+// script prépare tout le reste automatiquement (secret de session,
+// images placeholder, schéma + seed) dès que DATABASE_URL est configuré.
 import { existsSync, readFileSync, writeFileSync, copyFileSync } from "fs";
 import { randomBytes } from "crypto";
 import { execSync } from "child_process";
@@ -11,21 +13,28 @@ import { dirname, join } from "path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const envLocalPath = join(ROOT, ".env.local");
 const envPath = join(ROOT, ".env");
-const dbPath = join(ROOT, "prisma", "dev.db");
 
 function run(cmd) {
   console.log(`[dev-setup] ${cmd}`);
   execSync(cmd, { cwd: ROOT, stdio: "inherit" });
 }
 
-// 1. .env.local : le créer avec des valeurs de dev qui marchent tout de
-// suite si absent (jamais écraser un fichier existant, même incomplet).
+function hasValue(content, key) {
+  const line = content.split("\n").find((l) => l.startsWith(`${key}=`));
+  return !!line && line.slice(key.length + 1).trim().length > 0;
+}
+
+// 1. .env.local : le créer si absent, avec un secret de session généré.
+// DATABASE_URL reste vide ici : il n'y a pas de base par défaut possible
+// sans base externe (voir README pour obtenir une base Postgres gratuite
+// en 2 minutes, ex: Neon ou Vercel Postgres).
 if (!existsSync(envLocalPath)) {
-  console.log("[dev-setup] .env.local absent, création avec des valeurs de développement...");
+  console.log("[dev-setup] .env.local absent, création...");
   const secret = randomBytes(32).toString("hex");
   writeFileSync(
     envLocalPath,
-    `DATABASE_URL="file:./dev.db"
+    `# Colle ici l'URL de connexion d'une base Postgres (Neon, Vercel Postgres...)
+DATABASE_URL=
 COOKIE_SIGNING_SECRET=${secret}
 
 # Stripe (optionnel en dev : sans ces valeurs, tout le site fonctionne sauf
@@ -41,31 +50,31 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
   );
 }
 
-// 2. .env : Prisma CLI ne lit que .env, jamais .env.local. On le garde
-// synchronisé avec .env.local s'il n'existe pas encore ou si une valeur
-// requise y est manquante/vide (ex: COOKIE_SIGNING_SECRET= sans valeur).
-function hasValue(content, key) {
-  const line = content.split("\n").find((l) => l.startsWith(`${key}=`));
-  return !!line && line.slice(key.length + 1).trim().length > 0;
-}
-
+// 2. .env : Prisma CLI ne lit que .env, jamais .env.local.
 const envContent = existsSync(envPath) ? readFileSync(envPath, "utf8") : "";
-const needsEnvCopy =
-  !envContent || !hasValue(envContent, "DATABASE_URL") || !hasValue(envContent, "COOKIE_SIGNING_SECRET");
-
-if (needsEnvCopy) {
+if (!envContent || !hasValue(envContent, "COOKIE_SIGNING_SECRET")) {
   copyFileSync(envLocalPath, envPath);
 }
 
-// 3. Base de données : la créer et la peupler si elle n'existe pas encore.
-if (!existsSync(dbPath)) {
-  console.log("[dev-setup] Base de données absente, initialisation...");
-  run("npx prisma db push");
-  run("npx tsx scripts/generate-breed-images.ts");
-  run("npx tsx scripts/generate-exercise-images.ts");
-  run("npx tsx prisma/seed.ts");
-} else {
-  run("npx prisma generate");
+const finalEnv = readFileSync(envPath, "utf8");
+if (!hasValue(finalEnv, "DATABASE_URL")) {
+  console.log(`
+[dev-setup] ⚠ DATABASE_URL n'est pas configurée dans .env / .env.local.
+Ce projet a besoin d'une vraie base Postgres, même en développement
+(SQLite ne fonctionne pas en production sur un hébergeur serverless).
+
+Option la plus rapide : créer une base gratuite sur https://neon.tech
+(ou https://vercel.com/storage/postgres), copier son "Connection string",
+et la coller dans DATABASE_URL= (fichier .env.local à la racine du projet).
+Relance ensuite "npm run dev".
+`);
+  process.exit(1);
 }
+
+run("npx prisma generate");
+run("npx prisma db push");
+run("npx tsx scripts/generate-breed-images.ts");
+run("npx tsx scripts/generate-exercise-images.ts");
+run("npx tsx prisma/seed.ts");
 
 console.log("[dev-setup] Prêt.");
