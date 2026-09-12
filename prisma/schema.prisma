@@ -7,8 +7,16 @@ datasource db {
   // Neon/Vercel Postgres) qu'en production sur un hébergeur serverless
   // (Vercel...) où le système de fichiers n'est pas persistant — un
   // fichier SQLite y serait réinitialisé à chaque déploiement.
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  //
+  // directUrl : les intégrations Postgres serverless (Neon via Vercel)
+  // fournissent une connexion "poolée" (via PgBouncer) pour les requêtes
+  // de l'application, mais les changements de schéma (`prisma db push` /
+  // `migrate`) ont besoin d'une connexion directe — sans quoi ils peuvent
+  // échouer silencieusement ou par des erreurs peu explicites à cause du
+  // mode transaction du pooler. Voir scripts/prepare-database-url.mjs.
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
 }
 
 enum DogSize {
