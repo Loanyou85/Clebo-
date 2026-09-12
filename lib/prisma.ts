@@ -1,4 +1,7 @@
 import { PrismaClient } from "@prisma/client";
+import { ensureDatabaseUrl } from "./resolveDatabaseUrl";
+
+ensureDatabaseUrl();
 
 // Singleton client Prisma : évite d'ouvrir une nouvelle connexion à chaque
 // rechargement à chaud en dev (Next.js recharge les modules serveur).
