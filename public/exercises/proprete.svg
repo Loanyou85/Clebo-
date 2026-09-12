@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" role="img" aria-label="Illustration exercice Apprentissage de la propreté">
+  <rect width="400" height="260" fill="hsl(200, 75%, 93%)"/>
+  <g transform="translate(200,110)" color="hsl(200, 55%, 36%)">
+    <path d="M 0 -30 L 32 -2 L 24 -2 L 24 26 L -24 26 L -24 -2 L -32 -2 Z" fill="currentColor"/>
+  </g>
+  <text x="200" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="hsl(200, 55%, 36%)">Apprentissage de la propreté</text>
+</svg>

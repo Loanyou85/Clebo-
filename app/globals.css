@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+/* Palette Clebo : fond blanc, accent orange. Simple, chaleureux, lisible. */
+:root {
+  --background: #ffffff;
+  --background-muted: #fff7f0;
+  --surface: #ffffff;
+  --foreground: #201a15;
+  --foreground-muted: #6b6058;
+  --border-subtle: #f0e4d8;
+  --orange: #f97316;
+  --orange-dark: #c2570a;
+  --orange-light: #ffedd8;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-background-muted: var(--background-muted);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-border-subtle: var(--border-subtle);
+  --color-orange: var(--orange);
+  --color-orange-dark: var(--orange-dark);
+  --color-orange-light: var(--orange-light);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  min-height: 100dvh;
+}
+
+.container-page {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+.card-surface {
+  border: 1px solid var(--border-subtle);
+  background: var(--surface);
+  border-radius: 1.25rem;
+  box-shadow: 0 8px 24px -12px rgba(194, 87, 10, 0.15);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  background: var(--orange);
+  color: white;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--orange-dark);
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  border: 1.5px solid var(--orange);
+  color: var(--orange-dark);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  transition: background-color 0.15s ease;
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: var(--orange-light);
+}
+
+.input-field {
+  width: 100%;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: 0.65rem;
+  padding: 0.65rem 0.9rem;
+  background: white;
+  color: var(--foreground);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px var(--orange-light);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--orange-light);
+  color: var(--orange-dark);
+}

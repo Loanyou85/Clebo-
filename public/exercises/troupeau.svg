@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" role="img" aria-label="Illustration exercice Canalisation de l'instinct de troupeau">
+  <rect width="400" height="260" fill="hsl(30, 75%, 93%)"/>
+  <g transform="translate(200,110)" color="hsl(30, 55%, 36%)">
+    <circle cx="0" cy="-6" r="30" fill="none" stroke="currentColor" stroke-width="7"/><path d="M -14 -6 L -4 6 L 18 -18" stroke="currentColor" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="200" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="hsl(30, 55%, 36%)">Canalisation de l'instinct de troupeau</text>
+</svg>
