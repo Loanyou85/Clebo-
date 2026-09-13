@@ -6,7 +6,7 @@ import AdminRequestActions from "@/components/AdminRequestActions";
 export default async function AdminPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/connexion");
-  if (!user.isAdmin) redirect("/dashboard");
+  if (!user.isAdmin) redirect("/app");
 
   const requests = await prisma.exerciseRequest.findMany({
     include: { user: { select: { email: true } }, dog: { select: { name: true } } },

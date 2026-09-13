@@ -4,7 +4,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { computeFeedingPlan } from "@/lib/feeding";
 
-export default async function AlimentationPage({ searchParams }: PageProps<"/alimentation">) {
+export default async function AlimentationPage({ searchParams }: PageProps<"/rations">) {
   const user = await getCurrentUser();
   if (!user) redirect("/connexion");
 
@@ -51,7 +51,7 @@ export default async function AlimentationPage({ searchParams }: PageProps<"/ali
             {dogs.map((dog) => (
               <Link
                 key={dog.id}
-                href={`/alimentation?dogId=${dog.id}`}
+                href={`/rations?dogId=${dog.id}`}
                 className={dog.id === selectedDog?.id ? "btn-primary text-sm py-2 px-4" : "btn-outline text-sm py-2 px-4"}
               >
                 {dog.name}

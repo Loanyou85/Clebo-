@@ -54,8 +54,8 @@ export default async function RaceDetailPage({ params }: PageProps<"/races/[slug
                 <p className="text-foreground-muted text-sm mb-4">
                   Abonne-toi pour débloquer ce guide complet et toutes les techniques de dressage détaillées.
                 </p>
-                <Link href={user ? "/abonnement" : "/inscription"} className="btn-primary">
-                  {user ? "S'abonner — 27,99€/mois" : "Créer un compte pour continuer"}
+                <Link href={user ? "/tarifs" : "/inscription"} className="btn-primary">
+                  {user ? "S'abonner au Suivi Clebo — 14,99 €/mois" : "Créer un compte pour continuer"}
                 </Link>
               </div>
             )}
@@ -95,7 +95,7 @@ export default async function RaceDetailPage({ params }: PageProps<"/races/[slug
               </div>
             ))}
           </div>
-          <Link href="/alimentation" className="text-orange-dark font-semibold text-sm mt-3 inline-block">
+          <Link href="/rations" className="text-orange-dark font-semibold text-sm mt-3 inline-block">
             Calculer les quantités pour ton chien →
           </Link>
         </section>

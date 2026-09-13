@@ -21,7 +21,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const [loading, setLoading] = useState(false);
 
   const endpoint = mode === "inscription" ? "/api/auth/register" : "/api/auth/login";
-  const next = searchParams.get("next") ?? "/dashboard";
+  const next = searchParams.get("next") ?? "/app";
   const oauthError = searchParams.get("error");
   const oauthErrorMessage = oauthError ? OAUTH_ERROR_MESSAGES[oauthError] ?? "La connexion a échoué, réessaie." : null;
 
@@ -42,7 +42,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
         setLoading(false);
         return;
       }
-      const next = searchParams.get("next") ?? "/dashboard";
+      const next = searchParams.get("next") ?? "/app";
       router.push(next);
       router.refresh();
     } catch {

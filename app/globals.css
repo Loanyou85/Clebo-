@@ -1,16 +1,41 @@
 @import "tailwindcss";
 
-/* Palette Clebo : fond blanc, accent orange. Simple, chaleureux, lisible. */
+/* Clebo — carnet d'entraînement. Six valeurs, pas une de plus.
+   L'orange --signal est réservé à l'action et à la progression : s'il est
+   orange, soit on clique dessus, soit ça mesure un avancement. */
 :root {
-  --background: #ffffff;
-  --background-muted: #fff7f0;
-  --surface: #ffffff;
-  --foreground: #201a15;
-  --foreground-muted: #6b6058;
-  --border-subtle: #f0e4d8;
-  --orange: #f97316;
-  --orange-dark: #c2570a;
-  --orange-light: #ffedd8;
+  --encre: #15211b;
+  --papier: #faf8f3;
+  --foret: #1e3a2b;
+  --signal: #ff6b2c;
+  --brume: #e4e8e0;
+  --craie: #ffffff;
+
+  /* Dérivés strictement nécessaires au contraste AA (le brief l'exige) :
+     --signal pur ne passe pas AA en texte sur --papier (2.6:1), et du blanc
+     sur --signal ne le passe pas non plus (2.8:1). D'où un orange foncé
+     pour le texte, et de l'encre — pas du blanc — sur les boutons orange. */
+  --encre-doux: #5a6560;
+  --signal-texte: #c2470a;
+  --foret-doux: #c9d6cc;
+
+  --r-petit: 4px;
+  --r-grand: 20px;
+
+  /* Anciens noms de la première version du site, remappés sur la nouvelle
+     palette : les pages pas encore reprises une à une (races, espace
+     connecté, admin…) basculent ainsi immédiatement sur la bonne palette
+     au lieu de perdre leurs styles. À retirer quand toutes les pages
+     utiliseront les six valeurs ci-dessus. */
+  --background: var(--papier);
+  --background-muted: var(--brume);
+  --surface: var(--craie);
+  --foreground: var(--encre);
+  --foreground-muted: var(--encre-doux);
+  --border-subtle: var(--brume);
+  --orange: var(--signal);
+  --orange-dark: var(--signal-texte);
+  --orange-light: #ffe8dc;
 }
 
 @theme inline {
@@ -23,6 +48,24 @@
   --color-orange: var(--orange);
   --color-orange-dark: var(--orange-dark);
   --color-orange-light: var(--orange-light);
+
+  --color-encre: var(--encre);
+  --color-encre-doux: var(--encre-doux);
+  --color-papier: var(--papier);
+  --color-foret: var(--foret);
+  --color-foret-doux: var(--foret-doux);
+  --color-signal: var(--signal);
+  --color-signal-texte: var(--signal-texte);
+  --color-brume: var(--brume);
+  --color-craie: var(--craie);
+
+  /* Échelle typographique du brief : 14 / 16 / 18 / 24 / 32 / 48 / 72.
+     Nommée à part pour ne pas décaler l'échelle Tailwind par défaut. */
+  --text-titre-s: 1.5rem;
+  --text-titre-m: 2rem;
+  --text-titre-l: 3rem;
+  --text-titre-xl: 4.5rem;
+
   --font-display: var(--font-display);
   --font-body: var(--font-body);
 }
@@ -32,23 +75,47 @@ html {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--papier);
+  color: var(--encre);
   min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Titres : Bricolage Grotesque, graisse haute, interlignage serré. */
+.titre {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+}
+
+/* Longueur de ligne sous 70 caractères pour tout texte courant. */
+.prose-clebo {
+  max-width: 62ch;
+  line-height: 1.55;
 }
 
 .container-page {
   width: 100%;
   max-width: 72rem;
   margin-inline: auto;
-  padding-inline: 1.25rem;
+  padding-inline: 20px;
 }
 
+/* Navigation clavier visible partout (exigence d'accessibilité). */
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+  border-radius: var(--r-petit);
+}
+
+/* Surface posée sur le papier. Volontairement sans ombre : la hiérarchie
+   se lit dans la taille et l'espacement, pas dans une répétition de boîtes
+   identiques. */
 .card-surface {
-  border: 1px solid var(--border-subtle);
-  background: var(--surface);
-  border-radius: 1.25rem;
-  box-shadow: 0 8px 24px -12px rgba(194, 87, 10, 0.15);
+  border: 1px solid var(--brume);
+  background: var(--craie);
+  border-radius: var(--r-grand);
 }
 
 .btn-primary {
@@ -56,20 +123,24 @@ body {
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  background: var(--orange);
-  color: white;
-  border-radius: 0.75rem;
-  padding: 0.75rem 1.5rem;
-  transition: background-color 0.15s ease, transform 0.15s ease;
+  background: var(--signal);
+  color: var(--encre);
+  border-radius: var(--r-petit);
+  padding: 14px 24px;
+  transition: transform 120ms ease, background-color 120ms ease;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--orange-dark);
-  transform: translateY(-1px);
+  background: #ff7d45;
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: scale(0.97);
 }
 
 .btn-primary:disabled {
-  opacity: 0.5;
+  background: var(--brume);
+  color: var(--encre-doux);
   cursor: not-allowed;
 }
 
@@ -78,85 +149,106 @@ body {
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  border: 1.5px solid var(--orange);
-  color: var(--orange-dark);
-  border-radius: 0.75rem;
-  padding: 0.75rem 1.5rem;
-  transition: background-color 0.15s ease;
+  border: 1.5px solid var(--encre);
+  color: var(--encre);
+  background: transparent;
+  border-radius: var(--r-petit);
+  padding: 12px 24px;
+  transition: transform 120ms ease, background-color 120ms ease;
 }
 
 .btn-outline:hover:not(:disabled) {
-  background: var(--orange-light);
+  background: var(--brume);
+}
+
+.btn-outline:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.btn-outline:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Grande réponse tactile du diagnostic : pleine largeur, 56px de haut,
+   pensée pour un pouce avec l'autre main occupée par la laisse. */
+.choix {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 56px;
+  text-align: left;
+  font-weight: 600;
+  background: var(--craie);
+  color: var(--encre);
+  border: 1.5px solid var(--brume);
+  border-radius: var(--r-petit);
+  padding: 12px 16px;
+  transition: transform 120ms ease, border-color 120ms ease;
+}
+
+.choix:hover {
+  border-color: var(--encre);
+}
+
+.choix:active {
+  transform: scale(0.97);
+}
+
+.choix[aria-pressed="true"] {
+  border-color: var(--signal);
+  box-shadow: inset 0 0 0 1px var(--signal);
 }
 
 .input-field {
   width: 100%;
-  border: 1.5px solid var(--border-subtle);
-  border-radius: 0.65rem;
-  padding: 0.65rem 0.9rem;
-  background: white;
-  color: var(--foreground);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  border: 1.5px solid var(--brume);
+  border-radius: var(--r-petit);
+  padding: 12px 16px;
+  background: var(--craie);
+  color: var(--encre);
+  transition: border-color 120ms ease;
 }
 
 .input-field:focus {
   outline: none;
-  border-color: var(--orange);
-  box-shadow: 0 0 0 3px var(--orange-light);
+  border-color: var(--signal);
+  box-shadow: 0 0 0 3px rgba(255, 107, 44, 0.2);
 }
 
+/* Étiquette neutre : pas d'orange, il est réservé à l'action. */
 .badge {
   display: inline-flex;
   align-items: center;
   border-radius: 999px;
-  padding: 0.2rem 0.7rem;
-  font-size: 0.75rem;
+  padding: 4px 12px;
+  font-size: 0.875rem;
   font-weight: 600;
-  background: var(--orange-light);
-  color: var(--orange-dark);
+  background: var(--brume);
+  color: var(--encre);
 }
 
-/* Décor d'arrière-plan permanent : pattes qui remontent en diagonale en
-   boucle, toujours derrière le contenu (z-index par défaut, placé avant
-   le reste du <body> dans le DOM) et jamais interactives. */
-.floating-paws {
-  position: fixed;
-  inset: 0;
-  overflow: hidden;
-  z-index: 0;
-  pointer-events: none;
+/* Section pleine en forêt : une seule par page, c'est la respiration. */
+.surface-foret {
+  background: var(--foret);
+  color: var(--craie);
 }
 
-.floating-paw {
-  position: absolute;
-  bottom: -10%;
-  display: block;
-  opacity: 0;
-  will-change: transform, opacity;
-  animation-name: float-paw;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
+.surface-foret .card-surface {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
 }
 
-@keyframes float-paw {
-  0% {
-    transform: translate(0, 0) rotate(-15deg);
-    opacity: 0;
-  }
-  10% {
-    opacity: var(--peak-opacity, 0.4);
-  }
-  85% {
-    opacity: var(--peak-opacity, 0.4);
-  }
-  100% {
-    transform: translate(var(--drift, 8vw), -120vh) rotate(-15deg);
-    opacity: 0;
-  }
-}
-
+/* Aucune animation quand l'utilisateur a désactivé les effets de mouvement.
+   Règle globale volontairement large : elle couvre aussi les animations
+   ajoutées plus tard sans avoir à y repenser. */
 @media (prefers-reduced-motion: reduce) {
-  .floating-paws {
-    display: none;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

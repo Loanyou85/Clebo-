@@ -4,6 +4,7 @@ import { existsSync } from "fs";
 import { join } from "path";
 import { BREEDS } from "./data/breeds";
 import { BASE_EXERCISES } from "./data/exercises";
+import { PROGRAMS } from "./data/programs";
 import { findYoutubeVideo, isYoutubeSearchConfigured } from "../lib/youtubeSearch";
 
 const prisma = new PrismaClient();
@@ -152,6 +153,33 @@ async function main() {
         });
       }
     }
+  }
+
+  // Les programmes sont créés ici (métadonnées + prix), mais leurs 30
+  // séances sont générées séparément par `npm run programs:generate` :
+  // c'est long et ça consomme de l'IA, on ne le relance pas à chaque
+  // déploiement. Un programme sans séance reste `published: false` et
+  // n'apparaît donc pas sur le site.
+  console.log("Seed: programmes...");
+  for (const p of PROGRAMS) {
+    await prisma.program.upsert({
+      where: { slug: p.slug },
+      update: {
+        title: p.title,
+        probleme: p.probleme,
+        promise: p.promise,
+        summary: p.summary,
+        durationDays: p.durationDays,
+      },
+      create: {
+        slug: p.slug,
+        title: p.title,
+        probleme: p.probleme,
+        promise: p.promise,
+        summary: p.summary,
+        durationDays: p.durationDays,
+      },
+    });
   }
 
   console.log("Seed: marques de nourriture...");

@@ -45,8 +45,8 @@ export default async function DemandesExercicesPage({
       ) : (
         <div className="card-surface p-6 mb-10 text-center">
           <p className="font-semibold mb-2">Module réservé aux abonnés.</p>
-          <Link href="/abonnement" className="btn-primary">
-            S&apos;abonner — 27,99€/mois
+          <Link href="/tarifs" className="btn-primary">
+            S&apos;abonner au Suivi Clebo — 14,99 €/mois
           </Link>
         </div>
       )}

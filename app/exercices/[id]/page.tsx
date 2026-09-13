@@ -75,8 +75,8 @@ export default async function ExerciceDetailPage({ params }: PageProps<"/exercic
             Abonne-toi pour débloquer toutes les techniques de dressage détaillées, les vidéos et le
             module de demande d&apos;exercice sur-mesure.
           </p>
-          <Link href={user ? "/abonnement" : "/inscription"} className="btn-primary">
-            {user ? "S'abonner — 27,99€/mois" : "Créer un compte pour continuer"}
+          <Link href={user ? "/tarifs" : "/inscription"} className="btn-primary">
+            {user ? "S'abonner au Suivi Clebo — 14,99 €/mois" : "Créer un compte pour continuer"}
           </Link>
         </div>
       )}

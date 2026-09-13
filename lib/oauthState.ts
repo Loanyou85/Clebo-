@@ -33,6 +33,6 @@ export function verifyOAuthState(
 // Empêche une redirection ouverte : "next" ne peut être qu'un chemin
 // interne relatif (jamais une URL absolue fournie par le paramètre de requête).
 export function sanitizeNextPath(value: string | null | undefined): string {
-  if (!value || !value.startsWith("/") || value.startsWith("//")) return "/dashboard";
+  if (!value || !value.startsWith("/") || value.startsWith("//")) return "/app";
   return value;
 }

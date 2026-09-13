@@ -53,6 +53,18 @@ enum SubscriptionStatus {
   PAST_DUE
 }
 
+// Les six problèmes traités par Clebo. L'agressivité, la morsure et la
+// réactivité n'y figurent volontairement pas : ces cas sortent du tunnel
+// et sont renvoyés vers un comportementaliste (voir lib/securite.ts).
+enum ProblemeType {
+  LAISSE
+  RAPPEL
+  ABOIEMENT
+  SOLITUDE
+  SAUT
+  PROPRETE
+}
+
 model User {
   id                   String              @id @default(cuid())
   email                String              @unique
@@ -67,6 +79,9 @@ model User {
   createdAt            DateTime            @default(now())
   dogs                 Dog[]
   exerciseRequests     ExerciseRequest[]
+  purchases            Purchase[]
+  enrollments          Enrollment[]
+  diagnostics          Diagnostic[]
 }
 
 model Breed {
@@ -108,6 +123,7 @@ model Dog {
   environment      Environment
   createdAt        DateTime          @default(now())
   exerciseRequests ExerciseRequest[]
+  enrollments      Enrollment[]
 }
 
 model Exercise {
@@ -153,6 +169,107 @@ model FoodBrandBreed {
   breed       Breed     @relation(fields: [breedId], references: [id], onDelete: Cascade)
 
   @@unique([foodBrandId, breedId])
+}
+
+// Un programme daté : ce n'est pas un catalogue d'exercices mais un
+// calendrier de 30 jours sur UN problème précis, vendu 59 € une fois.
+model Program {
+  id            String       @id @default(cuid())
+  slug          String       @unique
+  title         String
+  probleme      ProblemeType
+  promise       String
+  summary       String
+  durationDays  Int          @default(30)
+  priceCents    Int          @default(5900)
+  coverImageUrl String?
+  published     Boolean      @default(false)
+  createdAt     DateTime     @default(now())
+  days          ProgramDay[]
+  purchases     Purchase[]
+  enrollments   Enrollment[]
+  diagnostics   Diagnostic[]
+}
+
+// Une séance datée. Le contenu est généré par l'IA puis corrigeable
+// (voir lib/programGeneration.ts).
+model ProgramDay {
+  id            String   @id @default(cuid())
+  programId     String
+  program       Program  @relation(fields: [programId], references: [id], onDelete: Cascade)
+  dayNumber     Int
+  objective     String
+  instructions  String
+  repetitions   Int
+  durationMin   Int
+  commonMistake String
+  videoUrl      String?
+  aiGenerated   Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  @@unique([programId, dayNumber])
+}
+
+// Achat unique : donne accès au programme à vie, sans abonnement.
+model Purchase {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  programId       String
+  program         Program  @relation(fields: [programId], references: [id])
+  amountCents     Int
+  stripeSessionId String   @unique
+  createdAt       DateTime @default(now())
+
+  @@unique([userId, programId])
+}
+
+// La progression d'UN chien sur UN programme : c'est le chien qui suit le
+// programme, pas le compte (un foyer peut avoir plusieurs chiens).
+model Enrollment {
+  id          String       @id @default(cuid())
+  userId      String
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dogId       String
+  dog         Dog          @relation(fields: [dogId], references: [id], onDelete: Cascade)
+  programId   String
+  program     Program      @relation(fields: [programId], references: [id])
+  startedAt   DateTime     @default(now())
+  completedAt DateTime?
+  sessions    SessionLog[]
+
+  @@unique([dogId, programId])
+}
+
+// Le journal : une ligne par séance faite, avec le score de réussite.
+// C'est ce qui alimente la courbe de progression.
+model SessionLog {
+  id           String     @id @default(cuid())
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  dayNumber    Int
+  successes    Int
+  note         String?
+  doneAt       DateTime   @default(now())
+
+  @@unique([enrollmentId, dayNumber])
+}
+
+// Résultat du questionnaire d'entrée. Enregistré AVANT toute création de
+// compte (userId null), puis rattaché au compte si le visiteur en crée un.
+model Diagnostic {
+  id                   String       @id @default(cuid())
+  userId               String?
+  user                 User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  probleme             ProblemeType
+  breedSlug            String?
+  ageMonths            Int?
+  sinceLabel           String?
+  triedLabel           String?
+  minutesPerDay        Int?
+  recommendedProgramId String?
+  recommendedProgram   Program?     @relation(fields: [recommendedProgramId], references: [id])
+  createdAt            DateTime     @default(now())
 }
 
 model ExerciseRequest {

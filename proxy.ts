@@ -11,9 +11,8 @@ import { SESSION_COOKIE_NAME, parseSessionCookie } from "@/lib/session";
 // (isActiveSubscription), pas ici, car il dépend de la donnée en base.
 const LOGGED_OUT_ONLY = new Set(["/inscription", "/connexion"]);
 const REQUIRES_LOGIN = [
-  "/dashboard",
+  "/app",
   "/chiens",
-  "/alimentation",
   "/demandes-exercices",
   "/admin",
 ];
@@ -42,9 +41,8 @@ export const config = {
   matcher: [
     "/inscription",
     "/connexion",
-    "/dashboard/:path*",
+    "/app/:path*",
     "/chiens/:path*",
-    "/alimentation/:path*",
     "/demandes-exercices/:path*",
     "/admin/:path*",
   ],

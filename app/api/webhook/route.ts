@@ -27,6 +27,40 @@ export async function POST(request: Request) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
         const userId = session.client_reference_id;
+
+        // Achat unique d'un programme : ouvre l'accès à vie.
+        if (session.mode === "payment" && userId) {
+          const programId = session.metadata?.programId;
+          if (programId) {
+            // L'accès étant à vie, un second paiement du même programme
+            // (deux onglets, un renvoi d'évènement par Stripe) ne doit ni
+            // créer de doublon ni faire échouer le webhook — sans quoi
+            // Stripe rejouerait l'évènement indéfiniment.
+            const existant = await prisma.purchase.findUnique({
+              where: { userId_programId: { userId, programId } },
+              select: { id: true },
+            });
+            if (!existant) {
+              await prisma.purchase.create({
+                data: {
+                  userId,
+                  programId,
+                  amountCents: session.amount_total ?? 0,
+                  stripeSessionId: session.id,
+                },
+              });
+            }
+            if (session.customer) {
+              await prisma.user.update({
+                where: { id: userId },
+                data: { stripeCustomerId: String(session.customer) },
+              });
+            }
+          }
+          break;
+        }
+
+        // Abonnement "Suivi Clebo".
         if (userId && session.customer && session.subscription) {
           await prisma.user.update({
             where: { id: userId },

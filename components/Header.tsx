@@ -6,32 +6,28 @@ interface HeaderProps {
 }
 
 const NAV_LINKS = [
+  { href: "/programmes", label: "Programmes" },
+  { href: "/tarifs", label: "Tarifs" },
   { href: "/races", label: "Races" },
-  { href: "/alimentation", label: "Alimentation" },
-  { href: "/abonnement", label: "Abonnement" },
+  { href: "/rations", label: "Rations" },
 ];
 
 export default function Header({ user }: HeaderProps) {
   return (
-    <header className="border-b border-border-subtle bg-white/90 backdrop-blur sticky top-0 z-20">
-      <div className="container-page py-3 flex items-center justify-between gap-4">
-        <Link href="/" className="flex items-center gap-2 font-display font-extrabold text-xl text-orange-dark">
-          <span aria-hidden>🐾</span> Clebo
+    <header className="border-b border-brume bg-papier/95 backdrop-blur sticky top-0 z-20">
+      <div className="container-page py-4 flex items-center justify-between gap-4">
+        <Link href="/" className="titre text-titre-s">
+          Clebo
         </Link>
 
-        <nav className="hidden md:flex items-center gap-6 text-sm font-semibold text-foreground-muted">
+        <nav className="hidden md:flex items-center gap-6 text-sm font-semibold text-encre-doux">
           {NAV_LINKS.map((link) => (
-            <Link key={link.href} href={link.href} className="hover:text-orange-dark transition-colors">
+            <Link key={link.href} href={link.href} className="hover:text-encre transition-colors">
               {link.label}
             </Link>
           ))}
-          {user && (
-            <Link href="/demandes-exercices" className="hover:text-orange-dark transition-colors">
-              Demandes d&apos;exercices
-            </Link>
-          )}
           {user?.isAdmin && (
-            <Link href="/admin" className="hover:text-orange-dark transition-colors">
+            <Link href="/admin" className="hover:text-encre transition-colors">
               Admin
             </Link>
           )}
@@ -40,21 +36,18 @@ export default function Header({ user }: HeaderProps) {
         <div className="flex items-center gap-3">
           {user ? (
             <>
-              <Link href="/dashboard" className="text-sm font-semibold hidden sm:inline text-foreground-muted hover:text-orange-dark">
-                {user.email}
-              </Link>
-              <Link href="/dashboard" className="btn-outline text-sm py-2 px-4">
+              <Link href="/app" className="btn-outline text-sm py-2 px-4">
                 Mon espace
               </Link>
               <LogoutButton />
             </>
           ) : (
             <>
-              <Link href="/connexion" className="btn-outline text-sm py-2 px-4">
+              <Link href="/connexion" className="text-sm font-semibold text-encre-doux hover:text-encre transition-colors">
                 Connexion
               </Link>
-              <Link href="/inscription" className="btn-primary text-sm py-2 px-4">
-                Créer un compte
+              <Link href="/diagnostic" className="btn-primary text-sm py-2 px-4">
+                Diagnostic gratuit
               </Link>
             </>
           )}

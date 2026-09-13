@@ -10,7 +10,7 @@ export default function SubscribeButton({ loggedIn }: { loggedIn: boolean }) {
 
   async function handleClick() {
     if (!loggedIn) {
-      router.push("/inscription?next=/abonnement");
+      router.push("/inscription?next=/tarifs");
       return;
     }
     setLoading(true);
@@ -28,7 +28,7 @@ export default function SubscribeButton({ loggedIn }: { loggedIn: boolean }) {
   return (
     <div>
       <button onClick={handleClick} disabled={loading} className="btn-primary w-full">
-        {loading ? "Redirection..." : "S'abonner — 27,99€/mois"}
+        {loading ? "Redirection..." : "S'abonner au Suivi Clebo — 14,99 €/mois"}
       </button>
       {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
     </div>

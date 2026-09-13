@@ -73,7 +73,7 @@ export default async function ChienPage({ params }: PageProps<"/chiens/[id]">) {
               <p className="font-bold text-xl text-orange-dark">{feedingPlan.dailyKcal} kcal</p>
             </div>
           </div>
-          <Link href="/alimentation" className="text-orange-dark font-semibold text-sm mt-4 inline-block">
+          <Link href="/rations" className="text-orange-dark font-semibold text-sm mt-4 inline-block">
             Voir les marques conseillées →
           </Link>
         </div>
