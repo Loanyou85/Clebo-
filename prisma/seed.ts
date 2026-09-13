@@ -4,6 +4,7 @@ import { existsSync } from "fs";
 import { join } from "path";
 import { BREEDS } from "./data/breeds";
 import { BASE_EXERCISES } from "./data/exercises";
+import { findYoutubeVideo, isYoutubeSearchConfigured } from "../lib/youtubeSearch";
 
 const prisma = new PrismaClient();
 
@@ -92,7 +93,27 @@ async function main() {
   }
 
   console.log("Seed: exercices...");
+  const youtubeConfigured = isYoutubeSearchConfigured();
   for (const ex of BASE_EXERCISES) {
+    // Ne cherche une vidéo que si aucune n'est déjà enregistrée (ni dans
+    // les données de seed, ni déjà trouvée lors d'un déploiement
+    // précédent) — évite de re-consommer du quota YouTube et de changer
+    // la vidéo affichée à chaque déploiement.
+    let videoUrl = ex.videoUrl;
+    if (!videoUrl && ex.videoSearchQuery && youtubeConfigured) {
+      const existingVideo = await prisma.exercise.findUnique({
+        where: { slug: ex.slug },
+        select: { videoUrl: true },
+      });
+      if (!existingVideo?.videoUrl) {
+        const found = await findYoutubeVideo(ex.videoSearchQuery);
+        if (found) {
+          console.log(`  -> vidéo trouvée pour "${ex.title}"`);
+          videoUrl = found.embedUrl;
+        }
+      }
+    }
+
     const exercise = await prisma.exercise.upsert({
       where: { slug: ex.slug },
       update: {
@@ -104,7 +125,7 @@ async function main() {
         durationWeeks: ex.durationWeeks,
         forAllBreeds: ex.forAllBreeds,
         imageUrl: ex.imageUrl,
-        videoUrl: ex.videoUrl,
+        videoUrl,
       },
       create: {
         slug: ex.slug,
@@ -116,7 +137,7 @@ async function main() {
         durationWeeks: ex.durationWeeks,
         forAllBreeds: ex.forAllBreeds,
         imageUrl: ex.imageUrl,
-        videoUrl: ex.videoUrl,
+        videoUrl,
       },
     });
 

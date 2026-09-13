@@ -12,6 +12,10 @@ export interface ExerciseSeed {
   breedSlugs?: string[];
   imageUrl?: string;
   videoUrl?: string;
+  // Requête utilisée par prisma/seed.ts pour trouver une vraie vidéo de
+  // démonstration via l'API YouTube Data v3 (voir lib/youtubeSearch.ts),
+  // uniquement si videoUrl ci-dessus n'est pas déjà renseigné à la main.
+  videoSearchQuery?: string;
 }
 
 export const BASE_EXERCISES: ExerciseSeed[] = [
@@ -26,6 +30,7 @@ export const BASE_EXERCISES: ExerciseSeed[] = [
     durationWeeks: 2,
     forAllBreeds: true,
     imageUrl: "/exercises/assis.svg",
+    videoSearchQuery: "apprendre à un chien à s'asseoir dressage",
   },
   {
     slug: "couche",
@@ -38,6 +43,7 @@ export const BASE_EXERCISES: ExerciseSeed[] = [
     durationWeeks: 3,
     forAllBreeds: true,
     imageUrl: "/exercises/couche.svg",
+    videoSearchQuery: "apprendre à un chien à se coucher dressage",
   },
   {
     slug: "rappel-de-base",
@@ -50,6 +56,7 @@ export const BASE_EXERCISES: ExerciseSeed[] = [
     durationWeeks: 4,
     forAllBreeds: true,
     imageUrl: "/exercises/rappel.svg",
+    videoSearchQuery: "dressage rappel chien débutant",
   },
   {
     slug: "marche-en-laisse-sans-tirer",
@@ -62,6 +69,7 @@ export const BASE_EXERCISES: ExerciseSeed[] = [
     durationWeeks: 6,
     forAllBreeds: true,
     imageUrl: "/exercises/laisse.svg",
+    videoSearchQuery: "chien qui tire en laisse solution dressage",
   },
   {
     slug: "apprentissage-de-la-proprete",
@@ -74,6 +82,7 @@ export const BASE_EXERCISES: ExerciseSeed[] = [
     durationWeeks: 4,
     forAllBreeds: true,
     imageUrl: "/exercises/proprete.svg",
+    videoSearchQuery: "éducation propreté chiot dressage",
   },
   {
     slug: "socialisation-aux-autres-chiens",
@@ -86,6 +95,7 @@ export const BASE_EXERCISES: ExerciseSeed[] = [
     durationWeeks: 8,
     forAllBreeds: true,
     imageUrl: "/exercises/socialisation.svg",
+    videoSearchQuery: "socialisation chiot autres chiens conseils",
   },
   {
     slug: "reste-pas-bouger",
@@ -98,6 +108,7 @@ export const BASE_EXERCISES: ExerciseSeed[] = [
     durationWeeks: 3,
     forAllBreeds: true,
     imageUrl: "/exercises/reste.svg",
+    videoSearchQuery: "dressage chien ordre reste pas bouger",
   },
   {
     slug: "rappel-avance-avec-distractions",
@@ -111,6 +122,7 @@ export const BASE_EXERCISES: ExerciseSeed[] = [
     forAllBreeds: false,
     breedSlugs: ["border-collie", "berger-australien", "husky-siberien", "jack-russell"],
     imageUrl: "/exercises/rappel-avance.svg",
+    videoSearchQuery: "dressage rappel chien avec distractions avancé",
   },
   {
     slug: "sociabilisation-renforcee",
@@ -124,6 +136,7 @@ export const BASE_EXERCISES: ExerciseSeed[] = [
     forAllBreeds: false,
     breedSlugs: ["berger-allemand", "staffordshire-bull-terrier"],
     imageUrl: "/exercises/sociabilisation.svg",
+    videoSearchQuery: "socialisation chien de garde inconnus dressage",
   },
   {
     slug: "canalisation-instinct-de-troupeau",
@@ -137,5 +150,6 @@ export const BASE_EXERCISES: ExerciseSeed[] = [
     forAllBreeds: false,
     breedSlugs: ["border-collie", "berger-australien"],
     imageUrl: "/exercises/troupeau.svg",
+    videoSearchQuery: "chien de troupeau rabattage gérer instinct dressage",
   },
 ];
