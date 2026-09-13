@@ -1,9 +1,9 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+import { getSiteUrl } from "@/lib/siteUrl";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const siteUrl = getSiteUrl();
   const [races, programmes] = await Promise.all([
     prisma.breed.findMany({ select: { slug: true }, orderBy: { name: "asc" } }),
     prisma.program.findMany({ select: { slug: true }, orderBy: { title: "asc" } }),

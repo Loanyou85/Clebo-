@@ -1,4 +1,5 @@
 import Stripe from "stripe";
+import { getSiteUrl } from "./siteUrl";
 
 // Client Stripe (clé secrète, serveur uniquement) + helpers Checkout.
 // Deux flux distincts :
@@ -13,10 +14,6 @@ function getStripeClient(): Stripe {
     throw new Error("STRIPE_SECRET_KEY n'est pas configurée.");
   }
   return new Stripe(secretKey);
-}
-
-function getSiteUrl(): string {
-  return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 }
 
 export async function createCheckoutSession(

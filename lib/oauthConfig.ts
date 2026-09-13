@@ -1,6 +1,4 @@
-function siteUrl(): string {
-  return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-}
+import { getSiteUrl as siteUrl } from "./siteUrl";
 
 export function googleRedirectUri(): string {
   return `${siteUrl()}/api/auth/google/callback`;

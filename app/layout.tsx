@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Bricolage_Grotesque, Inter_Tight } from "next/font/google";
 import Header from "@/components/Header";
 import { getCurrentUser } from "@/lib/auth";
+import { getSiteUrl } from "@/lib/siteUrl";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -19,12 +20,10 @@ const interTight = Inter_Tight({
   display: "swap",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(getSiteUrl()),
   title: {
-    default: "Clebo — Ton chien marche en laisse sans tirer, en 21 jours",
+    default: "Clebo — Ton chien marche en laisse sans tirer, en 30 jours",
     template: "%s — Clebo",
   },
   description:
