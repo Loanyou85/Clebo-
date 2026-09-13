@@ -2,11 +2,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUser, isActiveSubscription } from "@/lib/auth";
 
 export default async function RaceDetailPage({ params }: PageProps<"/races/[slug]">) {
   const { slug } = await params;
   const breed = await prisma.breed.findUnique({ where: { slug } });
   if (!breed) notFound();
+
+  const user = await getCurrentUser();
+  const subscribed = user ? isActiveSubscription(user) : false;
 
   const [exercises, foodBrands] = await Promise.all([
     prisma.exercise.findMany({
@@ -37,6 +41,27 @@ export default async function RaceDetailPage({ params }: PageProps<"/races/[slug
       </div>
 
       <div className="space-y-8">
+        {breed.aiGenerated && breed.aiTrainingGuide && (
+          <section>
+            <h2 className="font-display text-xl font-bold mb-3">Guide de dressage complet (généré par l&apos;IA)</h2>
+            {subscribed ? (
+              <div className="card-surface p-5">
+                <p className="text-foreground-muted whitespace-pre-line">{breed.aiTrainingGuide}</p>
+              </div>
+            ) : (
+              <div className="card-surface p-6 text-center">
+                <p className="font-semibold mb-2">Le guide de dressage détaillé pour cette race est réservé aux abonnés.</p>
+                <p className="text-foreground-muted text-sm mb-4">
+                  Abonne-toi pour débloquer ce guide complet et toutes les techniques de dressage détaillées.
+                </p>
+                <Link href={user ? "/abonnement" : "/inscription"} className="btn-primary">
+                  {user ? "S'abonner — 27,99€/mois" : "Créer un compte pour continuer"}
+                </Link>
+              </div>
+            )}
+          </section>
+        )}
+
         <section>
           <h2 className="font-display text-xl font-bold mb-3">Techniques de dressage recommandées</h2>
           <div className="space-y-3">

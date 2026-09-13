@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import DogForm from "@/components/DogForm";
 
 export default async function NouveauChienPage() {
-  const breeds = await prisma.breed.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true } });
+  const breeds = await prisma.breed.findMany({ orderBy: { name: "asc" }, select: { id: true, slug: true, name: true } });
 
   return (
     <div className="container-page py-12 max-w-xl">

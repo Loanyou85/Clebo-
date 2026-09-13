@@ -74,11 +74,17 @@ model Breed {
   description  String
   temperament  String
   weightMinKg  Float
-  weightMaxKg Float
+  weightMaxKg  Float
   createdAt    DateTime         @default(now())
   dogs         Dog[]
   exercises    ExerciseBreed[]
   foodBrands   FoodBrandBreed[]
+
+  // Race créée à la demande par un client (recherche dans /races sans
+  // résultat) plutôt que pré-chargée au seed : son profil et son guide de
+  // dressage complet ont été générés par l'IA (voir lib/breedGeneration.ts).
+  aiGenerated     Boolean @default(false)
+  aiTrainingGuide String?
 }
 
 model Dog {
@@ -86,26 +92,19 @@ model Dog {
   userId           String
   user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   name             String
+  // Nullable au niveau base pour ne jamais casser d'anciennes lignes, mais
+  // toujours renseigné par l'application : le formulaire impose de
+  // chercher une race existante ou d'en faire créer une par l'IA (voir
+  // components/BreedSearch.tsx) — il n'y a plus de case "chien croisé"
+  // séparée, une race inconnue est simplement une race à créer.
   breedId          String?
   breed            Breed?            @relation(fields: [breedId], references: [id])
-  isMixed          Boolean           @default(false)
-  mixedBreedNote   String?
-  characteristics  String?
   size             DogSize
   weightKg         Float
   ageMonths        Int
   environment      Environment
   createdAt        DateTime          @default(now())
   exerciseRequests ExerciseRequest[]
-
-  // Analyse IA du mélange de races déclaré par le client (mixedBreedNote) :
-  // races connues du site les plus proches détectées par l'IA (pour
-  // réutiliser les exercices/marques déjà associés à ces races) + un
-  // résumé personnalisé du programme de dressage. Regénérée uniquement
-  // quand mixedBreedNote change (voir lib/mixedBreedAnalysis.ts).
-  aiMatchedBreedSlugs String[] @default([])
-  aiTrainingSummary   String?
-  aiAnalyzedNote      String?
 }
 
 model Exercise {

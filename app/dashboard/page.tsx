@@ -64,7 +64,7 @@ export default async function DashboardPage() {
               )}
               <p className="font-display font-bold text-lg">{dog.name}</p>
               <p className="text-sm text-foreground-muted">
-                {dog.breed?.name ?? dog.mixedBreedNote ?? "Chien croisé"} · {dog.weightKg} kg
+                {dog.breed?.name ?? "Race inconnue"} · {dog.weightKg} kg
               </p>
             </Link>
           ))}

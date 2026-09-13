@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { computeFeedingPlan } from "@/lib/feeding";
-import { getEffectiveBreedIds } from "@/lib/dogBreedMatch";
 
 export default async function AlimentationPage({ searchParams }: PageProps<"/alimentation">) {
   const user = await getCurrentUser();
@@ -22,11 +21,10 @@ export default async function AlimentationPage({ searchParams }: PageProps<"/ali
     : dogs[0];
 
   const plan = selectedDog ? computeFeedingPlan(selectedDog) : null;
-  const effectiveBreedIds = selectedDog ? await getEffectiveBreedIds(selectedDog) : [];
   const foodBrands = selectedDog
     ? await prisma.foodBrand.findMany({
-        where: effectiveBreedIds.length
-          ? { OR: [{ forAllBreeds: true }, { breeds: { some: { breedId: { in: effectiveBreedIds } } } }] }
+        where: selectedDog.breedId
+          ? { OR: [{ forAllBreeds: true }, { breeds: { some: { breedId: selectedDog.breedId } } }] }
           : { forAllBreeds: true },
         orderBy: { name: "asc" },
       })

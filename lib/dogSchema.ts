@@ -2,10 +2,7 @@ import { z } from "zod";
 
 export const dogSchema = z.object({
   name: z.string().trim().min(1, "Le nom est requis.").max(60),
-  breedId: z.string().min(1).nullable(),
-  isMixed: z.boolean(),
-  mixedBreedNote: z.string().trim().max(200).optional().nullable(),
-  characteristics: z.string().trim().max(500).optional().nullable(),
+  breedId: z.string().min(1, "Choisis ou crée une race."),
   size: z.enum(["PETIT", "MOYEN", "GRAND"]),
   weightKg: z.coerce.number().positive("Le poids doit être positif.").max(120),
   ageMonths: z.coerce.number().int().min(0).max(300),

@@ -3,25 +3,18 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { SIZE_LABELS, ENVIRONMENT_LABELS, type DogInput } from "@/lib/dogSchema";
-
-interface BreedOption {
-  id: string;
-  name: string;
-}
+import BreedSearch, { type BreedOption } from "@/components/BreedSearch";
 
 interface DogFormProps {
   breeds: BreedOption[];
   dogId?: string;
-  initial?: Partial<DogInput>;
+  initial?: Partial<DogInput> & { breedName?: string };
 }
 
 export default function DogForm({ breeds, dogId, initial }: DogFormProps) {
   const router = useRouter();
   const [name, setName] = useState(initial?.name ?? "");
-  const [isMixed, setIsMixed] = useState(initial?.isMixed ?? false);
-  const [breedId, setBreedId] = useState(initial?.breedId ?? breeds[0]?.id ?? "");
-  const [mixedBreedNote, setMixedBreedNote] = useState(initial?.mixedBreedNote ?? "");
-  const [characteristics, setCharacteristics] = useState(initial?.characteristics ?? "");
+  const [breedId, setBreedId] = useState(initial?.breedId ?? "");
   const [size, setSize] = useState<DogInput["size"]>(initial?.size ?? "MOYEN");
   const [weightKg, setWeightKg] = useState(initial?.weightKg?.toString() ?? "");
   const [ageMonths, setAgeMonths] = useState(initial?.ageMonths?.toString() ?? "");
@@ -34,14 +27,17 @@ export default function DogForm({ breeds, dogId, initial }: DogFormProps) {
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     setError(null);
+
+    if (!breedId) {
+      setError("Choisis ou crée la race de ton chien.");
+      return;
+    }
+
     setLoading(true);
 
     const payload = {
       name,
-      isMixed,
-      breedId: isMixed ? null : breedId || null,
-      mixedBreedNote: isMixed ? mixedBreedNote : null,
-      characteristics: isMixed ? characteristics : null,
+      breedId,
       size,
       weightKg: Number(weightKg),
       ageMonths: Number(ageMonths),
@@ -82,58 +78,17 @@ export default function DogForm({ breeds, dogId, initial }: DogFormProps) {
       </div>
 
       <div>
-        <label className="flex items-center gap-2 text-sm font-semibold mb-2">
-          <input
-            type="checkbox"
-            checked={isMixed}
-            onChange={(e) => setIsMixed(e.target.checked)}
-            className="h-4 w-4"
-          />
-          Chien croisé / race inconnue
-        </label>
-
-        {isMixed ? (
-          <div>
-            <input
-              type="text"
-              placeholder="Races dominantes connues (ex: Berger Allemand et Labrador)"
-              value={mixedBreedNote ?? ""}
-              onChange={(e) => setMixedBreedNote(e.target.value)}
-              className="input-field"
-            />
-            <p className="text-xs text-foreground-muted mt-1 mb-3">
-              Optionnel, mais recommandé : une IA analyse cette description pour adapter le
-              programme de dressage de {name || "ton chien"} aux races qui s&apos;en rapprochent.
-            </p>
-
-            <label className="block text-sm font-semibold mb-1">
-              Caractéristiques particulières (optionnel)
-            </label>
-            <textarea
-              rows={3}
-              placeholder="ex: très joueur, un peu peureux avec les autres chiens, adore l'eau..."
-              value={characteristics ?? ""}
-              onChange={(e) => setCharacteristics(e.target.value)}
-              className="input-field"
-            />
-            <p className="text-xs text-foreground-muted mt-1">
-              Plus tu donnes de détails (comportement, poids, taille déjà renseignés ci-dessous),
-              plus l&apos;analyse IA du programme de dressage sera précise.
-            </p>
-          </div>
-        ) : (
-          <select
-            value={breedId}
-            onChange={(e) => setBreedId(e.target.value)}
-            className="input-field"
-          >
-            {breeds.map((b) => (
-              <option key={b.id} value={b.id}>
-                {b.name}
-              </option>
-            ))}
-          </select>
-        )}
+        <label className="block text-sm font-semibold mb-1">Race</label>
+        <BreedSearch
+          breeds={breeds}
+          initialQuery={initial?.breedName}
+          onSelect={(b) => setBreedId(b.id)}
+        />
+        <p className="text-xs text-foreground-muted mt-1">
+          Race introuvable ? Tape son nom et crée-la : l&apos;IA génère sa fiche complète et son guide
+          de dressage (ça marche aussi pour un chien croisé, ex: &quot;Croisé Labrador / Border
+          Collie&quot;).
+        </p>
       </div>
 
       <div className="grid grid-cols-2 gap-4">

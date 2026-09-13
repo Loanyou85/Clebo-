@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { computeFeedingPlan } from "@/lib/feeding";
-import { getEffectiveBreedIds } from "@/lib/dogBreedMatch";
 import { SIZE_LABELS, ENVIRONMENT_LABELS } from "@/lib/dogSchema";
 import DogForm from "@/components/DogForm";
 import DeleteDogButton from "@/components/DeleteDogButton";
@@ -17,17 +16,12 @@ export default async function ChienPage({ params }: PageProps<"/chiens/[id]">) {
   const dog = await prisma.dog.findUnique({ where: { id }, include: { breed: true } });
   if (!dog || dog.userId !== user.id) notFound();
 
-  const breeds = await prisma.breed.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true } });
+  const breeds = await prisma.breed.findMany({ orderBy: { name: "asc" }, select: { id: true, slug: true, name: true } });
   const feedingPlan = computeFeedingPlan(dog);
 
-  const effectiveBreedIds = await getEffectiveBreedIds(dog);
-  const matchedBreeds = effectiveBreedIds.length
-    ? await prisma.breed.findMany({ where: { id: { in: effectiveBreedIds } }, select: { id: true, name: true, slug: true } })
-    : [];
-
-  const exercises = effectiveBreedIds.length
+  const exercises = dog.breedId
     ? await prisma.exercise.findMany({
-        where: { OR: [{ forAllBreeds: true }, { breeds: { some: { breedId: { in: effectiveBreedIds } } } }] },
+        where: { OR: [{ forAllBreeds: true }, { breeds: { some: { breedId: dog.breedId } } }] },
         orderBy: { title: "asc" },
       })
     : await prisma.exercise.findMany({ where: { forAllBreeds: true }, orderBy: { title: "asc" } });
@@ -40,8 +34,7 @@ export default async function ChienPage({ params }: PageProps<"/chiens/[id]">) {
           <DeleteDogButton dogId={dog.id} />
         </div>
         <p className="text-foreground-muted mb-6">
-          {dog.breed ? dog.breed.name : dog.mixedBreedNote || "Chien croisé"} · {SIZE_LABELS[dog.size]} ·{" "}
-          {ENVIRONMENT_LABELS[dog.environment]}
+          {dog.breed?.name ?? "Race inconnue"} · {SIZE_LABELS[dog.size]} · {ENVIRONMENT_LABELS[dog.environment]}
         </p>
 
         <div className="card-surface p-6 mb-6">
@@ -50,10 +43,8 @@ export default async function ChienPage({ params }: PageProps<"/chiens/[id]">) {
             breeds={breeds}
             initial={{
               name: dog.name,
-              isMixed: dog.isMixed,
-              breedId: dog.breedId,
-              mixedBreedNote: dog.mixedBreedNote,
-              characteristics: dog.characteristics,
+              breedId: dog.breedId ?? undefined,
+              breedName: dog.breed?.name,
               size: dog.size,
               weightKg: dog.weightKg,
               ageMonths: dog.ageMonths,
@@ -89,30 +80,15 @@ export default async function ChienPage({ params }: PageProps<"/chiens/[id]">) {
       </div>
 
       <div>
-        {dog.isMixed && dog.aiTrainingSummary && (
+        {dog.breed?.aiGenerated && dog.breed.aiTrainingGuide && (
           <div className="card-surface p-5 mb-6 border-orange">
-            <p className="badge mb-2">Analyse IA du mélange de races</p>
-            <p className="text-sm text-foreground-muted mb-3">{dog.aiTrainingSummary}</p>
-            {matchedBreeds.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                <span className="text-xs text-foreground-muted">Races proches détectées :</span>
-                {matchedBreeds.map((b) => (
-                  <Link key={b.id} href={`/races/${b.slug}`} className="badge">
-                    {b.name}
-                  </Link>
-                ))}
-              </div>
-            )}
+            <p className="badge mb-2">Guide de dressage généré par l&apos;IA pour cette race</p>
+            <p className="text-sm text-foreground-muted whitespace-pre-line">{dog.breed.aiTrainingGuide}</p>
           </div>
         )}
 
         <h2 className="font-display font-bold text-lg mb-3">
-          Exercices de dressage recommandés
-          {dog.breed
-            ? ` pour un ${dog.breed.name}`
-            : matchedBreeds.length > 0
-              ? ` pour ${dog.name} (proche de ${matchedBreeds.map((b) => b.name).join(", ")})`
-              : ""}
+          Exercices de dressage recommandés{dog.breed ? ` pour un ${dog.breed.name}` : ""}
         </h2>
         <div className="space-y-3">
           {exercises.map((ex) => (
