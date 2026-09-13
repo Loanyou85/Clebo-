@@ -26,3 +26,29 @@ export async function getCurrentUser(): Promise<User | null> {
 export function isActiveSubscription(user: Pick<User, "subscriptionStatus">): boolean {
   return user.subscriptionStatus === "ACTIVE";
 }
+
+// Connexion via Google/Apple : réutilise un compte existant plutôt que
+// d'en créer un doublon dès que l'email correspond déjà (ex: le client
+// s'était d'abord inscrit par email/mot de passe) — l'email étant garanti
+// vérifié par le fournisseur, on lie simplement l'identifiant du
+// fournisseur à ce compte au lieu de bloquer la connexion.
+export async function findOrCreateOAuthUser(
+  provider: "google" | "apple",
+  providerId: string,
+  email: string
+): Promise<User> {
+  const byProviderId =
+    provider === "google"
+      ? await prisma.user.findUnique({ where: { googleId: providerId } })
+      : await prisma.user.findUnique({ where: { appleId: providerId } });
+  if (byProviderId) return byProviderId;
+
+  const byEmail = await prisma.user.findUnique({ where: { email } });
+  const providerData = provider === "google" ? { googleId: providerId } : { appleId: providerId };
+
+  if (byEmail) {
+    return prisma.user.update({ where: { id: byEmail.id }, data: providerData });
+  }
+
+  return prisma.user.create({ data: { email, ...providerData } });
+}

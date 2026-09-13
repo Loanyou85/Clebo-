@@ -22,7 +22,18 @@ export async function POST(request: Request) {
   const { email, password } = parsed.data;
 
   const user = await prisma.user.findUnique({ where: { email } });
-  const validPassword = user ? await verifyPassword(password, user.passwordHash) : false;
+
+  if (user && !user.passwordHash) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "Ce compte a été créé avec Google ou Apple : utilise ce bouton pour te connecter.",
+      },
+      { status: 401 }
+    );
+  }
+
+  const validPassword = user?.passwordHash ? await verifyPassword(password, user.passwordHash) : false;
 
   if (!user || !validPassword) {
     return NextResponse.json(
