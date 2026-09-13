@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform } from "motion/react";
 
 interface Etape {
@@ -22,6 +22,14 @@ export default function ProgramScrollStory({ etapes }: { etapes: Etape[] }) {
   const conteneur = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
 
+  // La version à scroll figé et la version statique n'ont pas la même
+  // structure DOM : basculer dès le premier rendu ferait échouer
+  // l'hydratation (le serveur ne connaît pas la préférence du visiteur).
+  // On rend donc d'abord la version statique, des deux côtés, puis on
+  // passe à la version animée une fois monté.
+  const [monte, setMonte] = useState(false);
+  useEffect(() => setMonte(true), []);
+
   const { scrollYProgress } = useScroll({
     target: conteneur,
     offset: ["start start", "end end"],
@@ -37,9 +45,9 @@ export default function ProgramScrollStory({ etapes }: { etapes: Etape[] }) {
   const etape = etapes[index] ?? etapes[0];
   if (!etape) return null;
 
-  // Sans mouvement : on affiche simplement toutes les étapes à la suite,
-  // sans scroll figé ni transformation.
-  if (reduceMotion) {
+  // Sans mouvement (ou avant l'hydratation) : toutes les étapes à la
+  // suite, sans scroll figé ni transformation.
+  if (reduceMotion || !monte) {
     return (
       <section className="surface-foret py-16">
         <div className="container-page max-w-2xl">

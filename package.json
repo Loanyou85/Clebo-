@@ -10,6 +10,7 @@
     "lint": "eslint",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
+    "programs:generate": "tsx scripts/generate-programs.ts",
     "assets:generate": "tsx scripts/generate-breed-images.ts && tsx scripts/generate-exercise-images.ts",
     "setup": "npm run db:push && npm run assets:generate && npm run db:seed",
     "postinstall": "prisma generate"
