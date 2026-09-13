@@ -2,6 +2,11 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getCurrentUser, isActiveSubscription } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import {
+  generateCustomExercise,
+  CustomExerciseGenerationUnavailableError,
+} from "@/lib/customExerciseGeneration";
+import { SIZE_LABELS, ENVIRONMENT_LABELS } from "@/lib/dogSchema";
 
 const bodySchema = z.object({
   title: z.string().trim().min(3, "Le titre est trop court.").max(120),
@@ -31,16 +36,52 @@ export async function POST(request: Request) {
   }
   const { title, description, dogId } = parsed.data;
 
-  if (dogId) {
-    const dog = await prisma.dog.findUnique({ where: { id: dogId } });
-    if (!dog || dog.userId !== user.id) {
-      return NextResponse.json({ ok: false, error: "Chien introuvable." }, { status: 400 });
-    }
+  const dog = dogId
+    ? await prisma.dog.findUnique({ where: { id: dogId }, include: { breed: true } })
+    : null;
+  if (dogId && (!dog || dog.userId !== user.id)) {
+    return NextResponse.json({ ok: false, error: "Chien introuvable." }, { status: 400 });
   }
 
-  await prisma.exerciseRequest.create({
+  const created = await prisma.exerciseRequest.create({
     data: { userId: user.id, dogId: dogId || null, title, description },
   });
 
-  return NextResponse.json({ ok: true });
+  try {
+    const content = await generateCustomExercise({
+      title,
+      description,
+      dogContext:
+        dog && dog.breed
+          ? {
+              breedName: dog.breed.name,
+              size: SIZE_LABELS[dog.size],
+              ageMonths: dog.ageMonths,
+              environment: ENVIRONMENT_LABELS[dog.environment],
+            }
+          : null,
+    });
+
+    const updated = await prisma.exerciseRequest.update({
+      where: { id: created.id },
+      data: {
+        status: "VALIDEE",
+        reviewedAt: new Date(),
+        aiDescription: content.description,
+        aiCommonMistakes: content.commonMistakes,
+        aiDurationWeeks: content.durationWeeks,
+        aiVideoSearchQuery: content.videoSearchQuery,
+      },
+    });
+
+    return NextResponse.json({ ok: true, status: updated.status });
+  } catch (error) {
+    if (!(error instanceof CustomExerciseGenerationUnavailableError)) {
+      console.error("Erreur lors de la génération de l'exercice sur-mesure par l'IA:", error);
+    }
+    // L'IA n'a pas pu générer le contenu (clé absente ou erreur) : la
+    // demande reste enregistrée EN_ATTENTE pour une validation manuelle
+    // classique plutôt que d'échouer l'envoi de la demande elle-même.
+    return NextResponse.json({ ok: true, status: created.status });
+  }
 }

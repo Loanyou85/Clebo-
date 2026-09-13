@@ -20,7 +20,7 @@ export default function ExerciseRequestForm({
   const [description, setDescription] = useState("");
   const [dogId, setDogId] = useState(defaultDogId ?? "");
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState<"VALIDEE" | "EN_ATTENTE" | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(event: FormEvent) {
@@ -43,7 +43,7 @@ export default function ExerciseRequestForm({
 
     setTitle("");
     setDescription("");
-    setSuccess(true);
+    setSuccess(data.status === "VALIDEE" ? "VALIDEE" : "EN_ATTENTE");
     router.refresh();
   }
 
@@ -87,9 +87,15 @@ export default function ExerciseRequestForm({
       </div>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
-      {success && (
+      {success === "VALIDEE" && (
         <p className="text-sm text-green-700">
-          Demande envoyée ! Elle apparaîtra ici une fois validée par notre équipe.
+          Ton exercice a été généré par l&apos;IA ! Retrouve-le juste en dessous.
+        </p>
+      )}
+      {success === "EN_ATTENTE" && (
+        <p className="text-sm text-green-700">
+          Demande envoyée ! La génération automatique n&apos;est pas disponible pour le moment, notre
+          équipe va la valider manuellement.
         </p>
       )}
 

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser, isActiveSubscription } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { youtubeSearchUrl } from "@/lib/youtubeSearch";
 import ExerciseRequestForm from "@/components/ExerciseRequestForm";
 
 const STATUS_LABELS: Record<string, string> = {
@@ -33,7 +34,8 @@ export default async function DemandesExercicesPage({
       <h1 className="font-display text-3xl font-extrabold mb-2">Demandes d&apos;exercices sur-mesure</h1>
       <p className="text-foreground-muted mb-8">
         Un exercice que tu veux faire faire à ton chien n&apos;est pas dans notre bibliothèque de base ?
-        Décris-le, notre équipe le valide avant qu&apos;il ne t&apos;apparaisse.
+        Décris-le : l&apos;IA génère aussitôt son déroulé complet, ce qu&apos;il ne faut pas faire et le
+        temps d&apos;acquisition estimé.
       </p>
 
       {subscribed ? (
@@ -64,6 +66,38 @@ export default async function DemandesExercicesPage({
               <p className="text-sm text-foreground-muted mt-2">{req.description}</p>
               {req.adminNote && (
                 <p className="text-sm text-orange-dark mt-2">Note de l&apos;équipe : {req.adminNote}</p>
+              )}
+
+              {req.aiDescription && (
+                <div className="mt-4 pt-4 border-t border-black/10 space-y-3">
+                  <p className="badge">Exercice généré par l&apos;IA</p>
+
+                  <div>
+                    <h3 className="font-semibold text-sm mb-1">Comment procéder</h3>
+                    <p className="text-sm text-foreground-muted whitespace-pre-line">{req.aiDescription}</p>
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold text-sm mb-1 text-red-700">Ce qu&apos;il ne faut pas faire</h3>
+                    <p className="text-sm text-foreground-muted whitespace-pre-line">{req.aiCommonMistakes}</p>
+                  </div>
+
+                  <p className="text-sm">
+                    <span className="text-foreground-muted">Acquis en environ </span>
+                    <span className="font-bold text-orange-dark">~{req.aiDurationWeeks} semaines</span>
+                  </p>
+
+                  {req.aiVideoSearchQuery && (
+                    <a
+                      href={youtubeSearchUrl(req.aiVideoSearchQuery)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-orange-dark font-semibold text-sm inline-block"
+                    >
+                      Rechercher des vidéos de démonstration sur YouTube →
+                    </a>
+                  )}
+                </div>
               )}
             </div>
           ))}

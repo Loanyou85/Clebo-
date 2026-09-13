@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type Anthropic from "@anthropic-ai/sdk";
-import { getAnthropicClient, MIXED_BREED_ANALYSIS_MODEL } from "./anthropic";
+import { getAnthropicClient, AI_MODEL } from "./anthropic";
 
 const profileSchema = z.object({
   displayName: z.string().min(1).max(80),
@@ -39,7 +39,7 @@ export async function generateBreedProfile(rawName: string): Promise<BreedProfil
 5. "trainingGuide" : un guide de dressage COMPLET et actionnable en français (8 à 15 phrases ou une liste), spécifique à cette race — points de vigilance, ordre dans lequel travailler les exercices de base (assis, rappel, laisse, propreté, socialisation...), fréquence et durée typiques, pièges fréquents propres à cette race.`;
 
   const message = await anthropic.messages.create({
-    model: MIXED_BREED_ANALYSIS_MODEL,
+    model: AI_MODEL,
     max_tokens: 2048,
     messages: [{ role: "user", content: prompt }],
     tools: [

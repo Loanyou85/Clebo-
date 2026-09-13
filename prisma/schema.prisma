@@ -165,6 +165,17 @@ model ExerciseRequest {
   description String
   status      RequestStatus  @default(EN_ATTENTE)
   adminNote   String?
+
+  // Contenu généré par l'IA dès l'envoi de la demande (voir
+  // lib/customExerciseGeneration.ts) : la demande passe directement en
+  // VALIDEE si la génération réussit, sans validation manuelle. Reste à
+  // null si l'IA n'est pas configurée ou a échoué — la demande reste alors
+  // EN_ATTENTE pour une validation manuelle classique via /admin.
+  aiDescription      String?
+  aiCommonMistakes   String?
+  aiDurationWeeks    Int?
+  aiVideoSearchQuery String?
+
   createdAt   DateTime       @default(now())
   reviewedAt  DateTime?
 }

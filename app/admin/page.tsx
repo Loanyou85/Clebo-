@@ -17,7 +17,8 @@ export default async function AdminPage() {
     <div className="container-page py-12 max-w-3xl">
       <h1 className="font-display text-3xl font-extrabold mb-2">Administration</h1>
       <p className="text-foreground-muted mb-8">
-        Valide ou refuse les demandes d&apos;exercices personnalisés soumises par les abonnés.
+        La plupart des demandes sont générées automatiquement par l&apos;IA dès leur envoi. Celles listées
+        ici n&apos;ont pas pu l&apos;être (clé IA non configurée ou erreur) : valide-les ou refuse-les manuellement.
       </p>
 
       <div className="space-y-4">

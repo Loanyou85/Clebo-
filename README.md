@@ -11,19 +11,18 @@ quotidiens, et de demander des exercices sur-mesure validés par une
 
 - **Comptes utilisateurs** : inscription/connexion par email + mot de
   passe, session httpOnly signée (30 jours).
-- **Profils de chiens** : nom, race (ou croisé), taille, poids, âge,
-  environnement de vie (campagne / ville / appartement / maison). Pour un
-  chien croisé, le client indique les races dominantes en texte libre :
-  une IA (Claude) analyse cette description pour rattacher le chien aux
-  races du site les plus proches (réutilisation des exercices/marques déjà
-  associés) et générer un résumé personnalisé du programme de dressage
-  (voir `lib/mixedBreedAnalysis.ts`). Optionnelle : sans `ANTHROPIC_API_KEY`,
-  le chien croisé reçoit simplement les exercices "toutes races".
-- **Races de chien** : 15 races courantes en France pré-chargées, chacune
-  avec sa propre illustration, sa description, son tempérament et son
-  gabarit de poids adulte. Ajouter une race = ajouter une entrée dans
-  `prisma/data/breeds.ts` puis relancer `npm run assets:generate` et
-  `npm run db:seed`.
+- **Profils de chiens** : nom, race, taille, poids, âge, environnement de
+  vie (campagne / ville / appartement / maison). La race est choisie via
+  une barre de recherche (`components/BreedSearch.tsx`) ; si elle
+  n'existe pas encore (race rare ou chien croisé), le client la crée
+  directement et une IA (Claude) génère sa fiche complète et son guide de
+  dressage (voir `lib/breedGeneration.ts`). Optionnel : sans
+  `ANTHROPIC_API_KEY`, la création de race échoue proprement avec un
+  message, le reste du site fonctionne normalement.
+- **Races de chien** : 15 races courantes en France pré-chargées (voir
+  `prisma/data/breeds.ts`), plus toute race créée par un client via la
+  recherche ci-dessus, chacune avec sa propre illustration, sa
+  description, son tempérament et son gabarit de poids adulte.
 - **Bibliothèque d'exercices de dressage** : base de données d'exercices
   (propreté, rappel, laisse, obéissance de base, socialisation), chacun
   avec description détaillée, image, vidéo (URL), nombre de répétitions
@@ -32,8 +31,11 @@ quotidiens, et de demander des exercices sur-mesure validés par une
   `ExerciseBreed`).
 - **Demandes d'exercices sur-mesure** : un utilisateur abonné peut
   demander un exercice qui n'existe pas dans la bibliothèque de base ;
-  la demande passe par un statut "en attente" jusqu'à validation par un
-  administrateur (`/admin`).
+  une IA (Claude) génère aussitôt son déroulé complet, les erreurs à
+  éviter, la durée d'acquisition estimée et une requête de recherche
+  YouTube pertinente (voir `lib/customExerciseGeneration.ts`). Si l'IA
+  n'est pas configurée ou échoue, la demande reste "en attente" pour une
+  validation manuelle classique via `/admin`.
 - **Alimentation** : calculateur de quantité de croquettes, de repas et
   d'eau par jour à partir du poids/âge/environnement du chien
   (`lib/feeding.ts`), et marques de nourriture conseillées par race.
@@ -122,8 +124,10 @@ Voir `.env.example`.
 | `STRIPE_WEBHOOK_SECRET` | Créé à l'étape "Webhook" ci-dessous |
 | `STRIPE_PRICE_ID` | Price Stripe récurrent à 27,99€/mois |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Dashboard Stripe → Developers → API keys |
-| `ANTHROPIC_API_KEY` | Optionnelle — [console.anthropic.com](https://console.anthropic.com/), active l'analyse IA des chiens croisés |
+| `ANTHROPIC_API_KEY` | Optionnelle — [console.anthropic.com](https://console.anthropic.com/), active la création de race par IA et la génération d'exercices sur-mesure |
 | `NEXT_PUBLIC_SITE_URL` | URL publique du site |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Optionnelles — [console.cloud.google.com](https://console.cloud.google.com/apis/credentials), activent "Continuer avec Google" |
+| `FREE_ACCESS_EMAILS` | Optionnelle — emails séparés par des virgules ayant accès à tout le site sans passer par Stripe |
 
 ## Configuration Stripe
 
@@ -148,10 +152,11 @@ Voir `.env.example`.
 
 ## Portée du MVP / limites connues
 
-- 15 races pré-chargées (races les plus courantes en France + "chien
-  croisé"), 10 exercices de base couvrant les 5 niveaux de dressage.
-  L'architecture (Prisma + tables de jointure) permet d'en ajouter sans
-  toucher au code applicatif.
+- 15 races pré-chargées (races les plus courantes en France), 10
+  exercices de base couvrant les 5 niveaux de dressage. Toute race
+  absente peut être créée à la volée par un client (IA). L'architecture
+  (Prisma + tables de jointure) permet d'en ajouter sans toucher au code
+  applicatif.
 - Les images de races/exercices sont des illustrations placeholder
   générées par code (`scripts/generate-*-images.ts`), à remplacer par de
   vraies photos en gardant le même chemin de fichier.
