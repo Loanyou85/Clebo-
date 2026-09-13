@@ -2,7 +2,7 @@ import { randomBytes } from "crypto";
 import { createSignedValue, parseSignedValue } from "./signedCookie";
 
 // Cookie signé et de très courte durée de vie, posé juste avant de
-// rediriger vers Google/Apple : protège contre le CSRF (le state renvoyé
+// rediriger vers Google : protège contre le CSRF (le state renvoyé
 // par le fournisseur doit correspondre) et retient la page vers laquelle
 // revenir une fois connecté.
 

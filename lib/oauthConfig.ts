@@ -6,19 +6,6 @@ export function googleRedirectUri(): string {
   return `${siteUrl()}/api/auth/google/callback`;
 }
 
-export function appleRedirectUri(): string {
-  return `${siteUrl()}/api/auth/apple/callback`;
-}
-
 export function isGoogleConfigured(): boolean {
   return Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
-}
-
-export function isAppleConfigured(): boolean {
-  return Boolean(
-    process.env.APPLE_CLIENT_ID &&
-      process.env.APPLE_TEAM_ID &&
-      process.env.APPLE_KEY_ID &&
-      process.env.APPLE_PRIVATE_KEY
-  );
 }

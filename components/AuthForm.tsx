@@ -9,7 +9,6 @@ interface AuthFormProps {
 
 const OAUTH_ERROR_MESSAGES: Record<string, string> = {
   google_indisponible: "La connexion avec Google n'est pas disponible pour le moment.",
-  apple_indisponible: "La connexion avec Apple n'est pas disponible pour le moment.",
   oauth_echec: "La connexion a échoué, réessaie.",
 };
 
@@ -66,16 +65,6 @@ export default function AuthForm({ mode }: AuthFormProps) {
             <path fill="#EA4335" d="M9 3.58c1.32 0 2.51.46 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .99 4.97l2.96 2.33C4.66 5.17 6.65 3.58 9 3.58z" />
           </svg>
           Continuer avec Google
-        </a>
-
-        <a
-          href={`/api/auth/apple?next=${encodeURIComponent(next)}`}
-          className="btn-outline w-full justify-center gap-2"
-        >
-          <svg width="16" height="18" viewBox="0 0 16 18" aria-hidden="true" fill="currentColor">
-            <path d="M13.03 9.58c-.02-2.05 1.68-3.03 1.75-3.08-.96-1.4-2.45-1.6-2.98-1.62-1.27-.13-2.48.75-3.13.75-.65 0-1.64-.73-2.7-.71-1.39.02-2.68.81-3.39 2.05-1.45 2.51-.37 6.22 1.03 8.26.69 1 1.5 2.11 2.57 2.07 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.6.66 2.7.64 1.11-.02 1.82-1.01 2.5-2.02.79-1.15 1.11-2.27 1.13-2.33-.02-.01-2.16-.83-2.18-3.3zM10.98 3.18c.57-.69.95-1.65.85-2.61-.82.03-1.81.55-2.4 1.23-.53.61-1 1.58-.87 2.51.91.07 1.85-.46 2.42-1.13z" />
-          </svg>
-          Continuer avec Apple
         </a>
       </div>
 

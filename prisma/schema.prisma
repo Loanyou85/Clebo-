@@ -56,11 +56,10 @@ enum SubscriptionStatus {
 model User {
   id                   String              @id @default(cuid())
   email                String              @unique
-  // Absent pour un compte créé uniquement via Google/Apple (connexion par
-  // mot de passe alors désactivée pour ce compte, voir app/api/auth/login).
+  // Absent pour un compte créé uniquement via Google (connexion par mot
+  // de passe alors désactivée pour ce compte, voir app/api/auth/login).
   passwordHash         String?
   googleId             String?             @unique
-  appleId              String?             @unique
   isAdmin              Boolean             @default(false)
   stripeCustomerId     String?             @unique
   stripeSubscriptionId String?             @unique

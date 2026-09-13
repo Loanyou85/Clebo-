@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         ok: false,
-        error: "Ce compte a été créé avec Google ou Apple : utilise ce bouton pour te connecter.",
+        error: "Ce compte a été créé avec Google : utilise ce bouton pour te connecter.",
       },
       { status: 401 }
     );

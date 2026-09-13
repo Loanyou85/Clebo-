@@ -20,7 +20,7 @@ export async function GET(request: Request) {
 
   try {
     const profile = await exchangeGoogleCode(code);
-    const user = await findOrCreateOAuthUser("google", profile.googleId, profile.email);
+    const user = await findOrCreateOAuthUser(profile.googleId, profile.email);
 
     cookieStore.set(SESSION_COOKIE_NAME, createSessionCookieValue({ userId: user.id }), {
       httpOnly: true,
