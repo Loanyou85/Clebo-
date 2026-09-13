@@ -1,9 +1,19 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { existsSync } from "fs";
+import { join } from "path";
 import { BREEDS } from "./data/breeds";
 import { BASE_EXERCISES } from "./data/exercises";
 
 const prisma = new PrismaClient();
+
+// Une vraie photo (public/breeds/<slug>.jpg) prime sur l'illustration
+// placeholder générée par code dès qu'elle existe — aucune liste à tenir
+// à jour manuellement, il suffit d'ajouter le fichier.
+function breedImageUrl(slug: string): string {
+  const hasPhoto = existsSync(join(process.cwd(), "public", "breeds", `${slug}.jpg`));
+  return hasPhoto ? `/breeds/${slug}.jpg` : `/breeds/${slug}.svg`;
+}
 
 const FOOD_BRANDS: Array<{
   name: string;
@@ -66,7 +76,7 @@ async function main() {
         temperament: b.temperament,
         weightMinKg: b.weightMinKg,
         weightMaxKg: b.weightMaxKg,
-        imageUrl: `/breeds/${b.slug}.svg`,
+        imageUrl: breedImageUrl(b.slug),
       },
       create: {
         slug: b.slug,
@@ -75,7 +85,7 @@ async function main() {
         temperament: b.temperament,
         weightMinKg: b.weightMinKg,
         weightMaxKg: b.weightMaxKg,
-        imageUrl: `/breeds/${b.slug}.svg`,
+        imageUrl: breedImageUrl(b.slug),
       },
     });
     breedIdBySlug.set(b.slug, breed.id);
