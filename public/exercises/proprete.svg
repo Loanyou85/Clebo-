@@ -1,7 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" role="img" aria-label="Illustration exercice Apprentissage de la propreté">
-  <rect width="400" height="260" fill="hsl(200, 75%, 93%)"/>
-  <g transform="translate(200,110)" color="hsl(200, 55%, 36%)">
-    <path d="M 0 -30 L 32 -2 L 24 -2 L 24 26 L -24 26 L -24 -2 L -32 -2 Z" fill="currentColor"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="260" viewBox="0 0 400 260" role="img" aria-label="Illustration Propreté">
+  <rect width="400" height="260" fill="#fff0e0"/>
+  <g transform="translate(200,145)">
+      <ellipse cx="0" cy="90" rx="120" ry="9" fill="#c2570a" opacity="0.12"/>
+      <!-- porte ouverte sur l'exterieur -->
+      <rect x="-150" y="-95" width="90" height="150" rx="6" fill="#ffe3c2" stroke="#c2570a" stroke-width="4"/>
+      <circle cx="-72" cy="-15" r="5" fill="#c2570a"/>
+      <!-- touffes d'herbe -->
+      <path d="M 60 85 Q 65 55 72 85 Q 78 60 85 85 Q 92 58 98 85 Z" fill="#4d9a3a"/>
+      <path d="M 100 90 Q 106 65 112 90 Q 118 68 125 90 Z" fill="#4d9a3a"/>
+      <!-- chiot assis, content -->
+      <g transform="translate(30,0)">
+        <path d="M 55 15 Q 90 5 82 -30" stroke="#c2570a" stroke-width="13" stroke-linecap="round" fill="none"/>
+        <path d="M 35 40 Q 60 35 58 65 Q 56 78 42 78" fill="#e8660f"/>
+        <ellipse cx="8" cy="35" rx="45" ry="40" fill="#f97316"/>
+        <path d="M -28 48 Q -32 65 -30 78" stroke="#c2570a" stroke-width="13" stroke-linecap="round" fill="none"/>
+        <path d="M -10 52 Q -12 67 -10 78" stroke="#c2570a" stroke-width="13" stroke-linecap="round" fill="none"/>
+        <g transform="translate(-38,-20) rotate(0) scale(0.85)">
+    <ellipse cx="0" cy="0" rx="38" ry="33" fill="#f97316"/>
+    <path d="M 10 -28 C 40 -30 50 0 26 26 C 16 32 4 16 10 -6 Z" fill="#c2570a"/>
+    <ellipse cx="-30" cy="12" rx="18" ry="13" fill="#ffd9ad"/>
+    <ellipse cx="-43" cy="10" rx="5.5" ry="4.5" fill="#3a2417"/>
+    <path d="M -30 20 Q -28 26 -20 23" stroke="#3a2417" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <circle cx="-8" cy="-6" r="4.5" fill="#3a2417"/>
+    <circle cx="-9" cy="-7.3" r="1.4" fill="#fff"/>
   </g>
-  <text x="200" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="hsl(200, 55%, 36%)">Apprentissage de la propreté</text>
+      </g>
+    </g>
+  <text x="200" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#c2570a">Propreté</text>
 </svg>

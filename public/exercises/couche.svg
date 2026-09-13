@@ -1,7 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" role="img" aria-label="Illustration exercice Couché">
-  <rect width="400" height="260" fill="hsl(30, 75%, 93%)"/>
-  <g transform="translate(200,110)" color="hsl(30, 55%, 36%)">
-    <circle cx="0" cy="-6" r="30" fill="none" stroke="currentColor" stroke-width="7"/><path d="M -14 -6 L -4 6 L 18 -18" stroke="currentColor" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="260" viewBox="0 0 400 260" role="img" aria-label="Illustration Couché">
+  <rect width="400" height="260" fill="#fff0e0"/>
+  <g transform="translate(200,150)">
+      <ellipse cx="0" cy="55" rx="110" ry="9" fill="#c2570a" opacity="0.12"/>
+      <path d="M -30 35 L -80 42" stroke="#c2570a" stroke-width="15" stroke-linecap="round"/>
+      <path d="M -20 42 L -70 50" stroke="#c2570a" stroke-width="15" stroke-linecap="round"/>
+      <path d="M 55 15 Q 95 5 100 -20" stroke="#c2570a" stroke-width="14" stroke-linecap="round" fill="none"/>
+      <ellipse cx="10" cy="28" rx="65" ry="30" fill="#f97316"/>
+      <g transform="translate(-55,0) rotate(0) scale(0.9)">
+    <ellipse cx="0" cy="0" rx="38" ry="33" fill="#f97316"/>
+    <path d="M 10 -28 C 40 -30 50 0 26 26 C 16 32 4 16 10 -6 Z" fill="#c2570a"/>
+    <ellipse cx="-30" cy="12" rx="18" ry="13" fill="#ffd9ad"/>
+    <ellipse cx="-43" cy="10" rx="5.5" ry="4.5" fill="#3a2417"/>
+    <path d="M -30 20 Q -28 26 -20 23" stroke="#3a2417" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <circle cx="-8" cy="-6" r="4.5" fill="#3a2417"/>
+    <circle cx="-9" cy="-7.3" r="1.4" fill="#fff"/>
   </g>
-  <text x="200" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="hsl(30, 55%, 36%)">Couché</text>
+    </g>
+  <text x="200" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#c2570a">Couché</text>
 </svg>

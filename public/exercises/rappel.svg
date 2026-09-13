@@ -1,7 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" role="img" aria-label="Illustration exercice Rappel de base">
-  <rect width="400" height="260" fill="hsl(45, 75%, 93%)"/>
-  <g transform="translate(200,110)" color="hsl(45, 55%, 36%)">
-    <path d="M -35 0 L 25 0 M 25 0 L 10 -14 M 25 0 L 10 14" stroke="currentColor" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="260" viewBox="0 0 400 260" role="img" aria-label="Illustration Rappel">
+  <rect width="400" height="260" fill="#fff0e0"/>
+  <g transform="translate(210,150)">
+      <ellipse cx="0" cy="60" rx="100" ry="9" fill="#c2570a" opacity="0.12"/>
+      <path d="M 70 -30 L 100 -34" stroke="#c2570a" stroke-width="5" stroke-linecap="round" opacity="0.4"/>
+      <path d="M 78 -10 L 112 -12" stroke="#c2570a" stroke-width="5" stroke-linecap="round" opacity="0.4"/>
+      <path d="M 75 10 L 108 10" stroke="#c2570a" stroke-width="5" stroke-linecap="round" opacity="0.4"/>
+      <path d="M 45 -5 Q 80 -35 65 -55" stroke="#c2570a" stroke-width="14" stroke-linecap="round" fill="none"/>
+      <path d="M -25 30 Q -15 45 -40 55" stroke="#c2570a" stroke-width="15" stroke-linecap="round" fill="none"/>
+      <path d="M 25 20 Q 40 38 20 52" stroke="#c2570a" stroke-width="15" stroke-linecap="round" fill="none"/>
+      <path d="M -30 15 Q -55 20 -70 5" stroke="#c2570a" stroke-width="15" stroke-linecap="round" fill="none"/>
+      <path d="M 10 5 Q 35 -5 45 -20" stroke="#c2570a" stroke-width="15" stroke-linecap="round" fill="none"/>
+      <ellipse cx="0" cy="10" rx="58" ry="34" fill="#f97316" transform="rotate(-8)"/>
+      <g transform="translate(-55,-18) rotate(-6) scale(1)">
+    <ellipse cx="0" cy="0" rx="38" ry="33" fill="#f97316"/>
+    <path d="M 10 -28 C 40 -30 50 0 26 26 C 16 32 4 16 10 -6 Z" fill="#c2570a"/>
+    <ellipse cx="-30" cy="12" rx="18" ry="13" fill="#ffd9ad"/>
+    <ellipse cx="-43" cy="10" rx="5.5" ry="4.5" fill="#3a2417"/>
+    <path d="M -22 22 Q -20 38 -8 34 Q -14 24 -14 20 Z" fill="#fb7185"/>
+    <circle cx="-8" cy="-6" r="4.5" fill="#3a2417"/>
+    <circle cx="-9" cy="-7.3" r="1.4" fill="#fff"/>
   </g>
-  <text x="200" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="hsl(45, 55%, 36%)">Rappel de base</text>
+    </g>
+  <text x="200" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#c2570a">Rappel</text>
 </svg>
