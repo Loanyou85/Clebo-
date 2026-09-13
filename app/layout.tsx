@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Baloo_2, Nunito } from "next/font/google";
 import Header from "@/components/Header";
+import FloatingPaws from "@/components/FloatingPaws";
 import { getCurrentUser } from "@/lib/auth";
 import "./globals.css";
 
@@ -34,6 +35,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="fr" className={`${baloo.variable} ${nunito.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-background font-body text-foreground antialiased">
+        <FloatingPaws />
         <Header user={user ? { email: user.email, isAdmin: user.isAdmin } : null} />
         <main className="flex-1">{children}</main>
         <footer className="border-t border-border-subtle mt-16">

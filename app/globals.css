@@ -115,3 +115,48 @@ body {
   background: var(--orange-light);
   color: var(--orange-dark);
 }
+
+/* Décor d'arrière-plan permanent : pattes qui remontent en diagonale en
+   boucle, toujours derrière le contenu (z-index par défaut, placé avant
+   le reste du <body> dans le DOM) et jamais interactives. */
+.floating-paws {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.floating-paw {
+  position: absolute;
+  bottom: -10%;
+  display: block;
+  opacity: 0;
+  will-change: transform, opacity;
+  animation-name: float-paw;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes float-paw {
+  0% {
+    transform: translate(0, 0) rotate(-15deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: var(--peak-opacity, 0.4);
+  }
+  85% {
+    opacity: var(--peak-opacity, 0.4);
+  }
+  100% {
+    transform: translate(var(--drift, 8vw), -120vh) rotate(-15deg);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-paws {
+    display: none;
+  }
+}
