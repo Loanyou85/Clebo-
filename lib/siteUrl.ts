@@ -18,6 +18,11 @@ function premiereValeurUtile(...valeurs: Array<string | undefined>): string | nu
 
 export function getSiteUrl(): string {
   const brute = premiereValeurUtile(
+    // SITE_URL (sans préfixe public) est le nom à privilégier : cette
+    // fonction n'est appelée que côté serveur, la valeur n'a donc aucune
+    // raison d'être exposée au navigateur — ce que Vercel signale à juste
+    // titre quand on préfixe une variable par NEXT_PUBLIC_.
+    process.env.SITE_URL,
     process.env.NEXT_PUBLIC_SITE_URL,
     // Fournies automatiquement par Vercel : le site reste fonctionnel même
     // si NEXT_PUBLIC_SITE_URL n'a jamais été renseignée.

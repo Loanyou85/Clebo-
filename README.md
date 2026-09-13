@@ -133,8 +133,12 @@ gratuitement ce type de site.
    - `COOKIE_SIGNING_SECRET` → n'importe quelle longue suite de
      caractères aléatoires (ex : tape au hasard sur le clavier, 40
      caractères).
-   - `NEXT_PUBLIC_SITE_URL` → laisse vide pour l'instant, tu la
-     complèteras à l'étape 5 avec l'adresse donnée par Vercel.
+   - `SITE_URL` → **ne la crée pas encore** : tu l'ajouteras à l'étape 5
+     avec l'adresse donnée par Vercel. Ne crée jamais une variable vide —
+     une variable définie mais vide n'est pas la même chose qu'une
+     variable absente, et c'est une source classique de build cassé (le
+     code s'en protège désormais, mais la règle reste valable pour toutes
+     les variables).
    - Les 4 variables Stripe peuvent rester vides pour l'instant : le site
      fonctionnera entièrement sauf le bouton de paiement (à activer plus
      tard, voir "Configuration Stripe" ci-dessous).
@@ -146,9 +150,16 @@ gratuitement ce type de site.
 5. Cliquer **Deploy**. Après quelques minutes, Vercel donne une adresse du
    type `https://clebo-xxxx.vercel.app` : c'est ton site, en ligne,
    accessible par n'importe qui. Retourne dans **Settings → Environment
-   Variables**, mets à jour `NEXT_PUBLIC_SITE_URL` avec cette adresse, puis
-   clique **Redeploy** (onglet **Deployments** → "..." sur le dernier
+   Variables**, ajoute `SITE_URL` avec cette adresse (sans slash final),
+   puis clique **Redeploy** (onglet **Deployments** → "..." sur le dernier
    déploiement → **Redeploy**).
+
+   Le nom `SITE_URL` est volontairement sans préfixe `NEXT_PUBLIC_` : cette
+   valeur ne sert que côté serveur, Vercel avertit à juste titre quand on
+   expose inutilement une variable au navigateur. Si la variable manque,
+   le site se rabat automatiquement sur l'adresse fournie par Vercel — mais
+   cette adresse change à chaque déploiement, ce qui perturberait les
+   retours de paiement Stripe et la connexion Google.
 
 À chaque déploiement, le site crée/synchronise automatiquement ses tables
 et recharge les races/exercices de base (voir le script `build` dans
@@ -184,7 +195,7 @@ Voir `.env.example`.
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Dashboard Stripe → Developers → API keys |
 | `ANTHROPIC_API_KEY` | Optionnelle — [console.anthropic.com](https://console.anthropic.com/), active la création de race par IA et la génération d'exercices sur-mesure |
 | `YOUTUBE_API_KEY` | Optionnelle — [console.cloud.google.com](https://console.cloud.google.com/apis/library/youtube.googleapis.com), intègre une vraie vidéo sous les exercices sur-mesure générés |
-| `NEXT_PUBLIC_SITE_URL` | URL publique du site |
+| `SITE_URL` | URL publique du site, ex `https://clebo.vercel.app` (sans préfixe `NEXT_PUBLIC_` : la valeur ne sert que côté serveur). Facultative : le site retombe sinon sur l’adresse fournie par Vercel |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Optionnelles — [console.cloud.google.com](https://console.cloud.google.com/apis/credentials), activent "Continuer avec Google" |
 | `FREE_ACCESS_EMAILS` | Optionnelle — emails séparés par des virgules ayant accès à tout le site sans passer par Stripe |
 
