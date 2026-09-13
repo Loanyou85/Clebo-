@@ -8,12 +8,17 @@ import { findYoutubeVideo, isYoutubeSearchConfigured } from "@/lib/youtubeSearch
 
 /**
  * Génère UN lot de séances manquantes pour un programme, depuis l'espace
- * d'administration. Volontairement par lots de 10 plutôt qu'en une fois :
- * générer 30 séances dépasserait la durée maximale d'une fonction
- * serverless. L'administrateur clique jusqu'à ce que le programme soit
- * complet, et voit la progression à chaque clic.
+ * d'administration.
+ *
+ * Le lot est volontairement petit : sur le plan gratuit de Vercel une
+ * fonction est coupée à 60 secondes, et générer 30 séances d'un coup
+ * dépasserait largement ce délai. Le bouton d'administration rappelle
+ * l'endpoint en boucle jusqu'à ce que le programme soit complet — une
+ * seule action pour l'administrateur, mais des requêtes courtes.
  */
-const TAILLE_LOT = 10;
+export const maxDuration = 60;
+
+const TAILLE_LOT = 5;
 
 const bodySchema = z.object({ programSlug: z.string().trim().min(1).max(80) });
 

@@ -10,13 +10,15 @@ interface ProgramGenerateButtonProps {
 }
 
 /**
- * Génère les séances par lots de 10. Chaque clic fait un appel à l'IA :
- * c'est volontaire, ça tient dans la durée d'une fonction serverless et
- * l'avancement reste visible.
+ * Un seul clic génère tout le programme, mais en enchaînant plusieurs
+ * requêtes courtes : une fonction serverless est coupée à 60 secondes, et
+ * générer 30 séances en un appel dépasserait ce délai. L'avancement
+ * s'affiche au fur et à mesure.
  */
 export default function ProgramGenerateButton({ programSlug, total, attendu }: ProgramGenerateButtonProps) {
   const router = useRouter();
   const [chargement, setChargement] = useState(false);
+  const [avancement, setAvancement] = useState(total);
   const [message, setMessage] = useState<string | null>(null);
   const [erreur, setErreur] = useState<string | null>(null);
 
@@ -24,31 +26,43 @@ export default function ProgramGenerateButton({ programSlug, total, attendu }: P
     setChargement(true);
     setErreur(null);
     setMessage(null);
-    try {
-      const res = await fetch("/api/admin/programs/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ programSlug }),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.ok) {
-        setErreur(data.error ?? "La génération a échoué, réessaie.");
-        setChargement(false);
-        return;
+
+    // Garde-fou : sans elle, une erreur inattendue côté serveur ferait
+    // tourner la boucle indéfiniment.
+    const maxTours = Math.ceil(attendu / 2) + 2;
+
+    for (let tour = 0; tour < maxTours; tour++) {
+      let data;
+      try {
+        const res = await fetch("/api/admin/programs/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ programSlug }),
+        });
+        data = await res.json();
+        if (!res.ok || !data.ok) {
+          setErreur(data.error ?? "La génération a échoué. Reclique pour reprendre où ça s'est arrêté.");
+          break;
+        }
+      } catch {
+        setErreur("Connexion interrompue. Reclique pour reprendre où ça s'est arrêté.");
+        break;
       }
-      setMessage(
-        data.termine
-          ? `Programme complet : ${data.total} séances. Il est maintenant en vente.`
-          : `${data.total} séances sur ${data.attendu}. Relance pour les suivantes.`
-      );
-      router.refresh();
-    } catch {
-      setErreur("Impossible de contacter le serveur, réessaie.");
+
+      setAvancement(data.total);
+
+      if (data.termine) {
+        setMessage(`Programme complet : ${data.total} séances. Il est maintenant en vente.`);
+        break;
+      }
+      setMessage(`${data.total} séances sur ${data.attendu}…`);
     }
+
     setChargement(false);
+    router.refresh();
   }
 
-  const complet = total >= attendu;
+  const complet = avancement >= attendu;
 
   return (
     <div>
@@ -59,12 +73,20 @@ export default function ProgramGenerateButton({ programSlug, total, attendu }: P
         className="btn-primary text-sm py-2 px-4"
       >
         {chargement
-          ? "Génération en cours… (30 à 60 s)"
+          ? `Génération en cours… ${avancement}/${attendu}`
           : complet
             ? "Programme complet"
-            : `Générer les 10 séances suivantes (${total}/${attendu})`}
+            : avancement > 0
+              ? `Reprendre la génération (${avancement}/${attendu})`
+              : "Générer les séances"}
       </button>
-      {message && <p className="text-sm text-encre-doux mt-2">{message}</p>}
+
+      {chargement && (
+        <p className="text-sm text-encre-doux mt-2">
+          Laisse cet onglet ouvert, ça prend quelques minutes pour un programme entier.
+        </p>
+      )}
+      {message && !chargement && <p className="text-sm text-encre-doux mt-2">{message}</p>}
       {erreur && <p className="text-sm text-red-700 mt-2">{erreur}</p>}
     </div>
   );

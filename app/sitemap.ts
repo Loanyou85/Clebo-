@@ -2,11 +2,20 @@ import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { getSiteUrl } from "@/lib/siteUrl";
 
+// Le sitemap est calculé à la demande, jamais figé au moment du build :
+// sinon il dépendrait de la base pendant le déploiement (une base
+// momentanément injoignable ferait échouer tout le déploiement) et il
+// n'inclurait jamais les races créées par les clients après coup.
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = getSiteUrl();
+
+  // Une base injoignable ne doit pas renvoyer une erreur 500 aux robots :
+  // on sert au moins les pages fixes.
   const [races, programmes] = await Promise.all([
-    prisma.breed.findMany({ select: { slug: true }, orderBy: { name: "asc" } }),
-    prisma.program.findMany({ select: { slug: true }, orderBy: { title: "asc" } }),
+    prisma.breed.findMany({ select: { slug: true }, orderBy: { name: "asc" } }).catch(() => []),
+    prisma.program.findMany({ select: { slug: true }, orderBy: { title: "asc" } }).catch(() => []),
   ]);
 
   const pagesFixes = [
