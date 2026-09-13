@@ -175,6 +175,11 @@ model ExerciseRequest {
   aiCommonMistakes   String?
   aiDurationWeeks    Int?
   aiVideoSearchQuery String?
+  // URL d'intégration (embed) d'une vraie vidéo YouTube trouvée via l'API
+  // officielle (voir lib/youtubeSearch.ts) — absent si YOUTUBE_API_KEY
+  // n'est pas configurée ou si aucun résultat pertinent n'a été trouvé ;
+  // aiVideoSearchQuery reste alors le seul repli (lien de recherche).
+  aiVideoUrl         String?
 
   createdAt   DateTime       @default(now())
   reviewedAt  DateTime?

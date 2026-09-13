@@ -32,10 +32,13 @@ quotidiens, et de demander des exercices sur-mesure validés par une
 - **Demandes d'exercices sur-mesure** : un utilisateur abonné peut
   demander un exercice qui n'existe pas dans la bibliothèque de base ;
   une IA (Claude) génère aussitôt son déroulé complet, les erreurs à
-  éviter, la durée d'acquisition estimée et une requête de recherche
-  YouTube pertinente (voir `lib/customExerciseGeneration.ts`). Si l'IA
-  n'est pas configurée ou échoue, la demande reste "en attente" pour une
-  validation manuelle classique via `/admin`.
+  éviter et la durée d'acquisition estimée (voir
+  `lib/customExerciseGeneration.ts`). Une vraie vidéo de démonstration est
+  intégrée automatiquement via l'API YouTube Data v3 si `YOUTUBE_API_KEY`
+  est configurée (voir `lib/youtubeSearch.ts`), sinon un simple lien de
+  recherche s'affiche. Si l'IA (Claude) n'est pas configurée ou échoue, la
+  demande reste "en attente" pour une validation manuelle classique via
+  `/admin`.
 - **Alimentation** : calculateur de quantité de croquettes, de repas et
   d'eau par jour à partir du poids/âge/environnement du chien
   (`lib/feeding.ts`), et marques de nourriture conseillées par race.
@@ -125,6 +128,7 @@ Voir `.env.example`.
 | `STRIPE_PRICE_ID` | Price Stripe récurrent à 27,99€/mois |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Dashboard Stripe → Developers → API keys |
 | `ANTHROPIC_API_KEY` | Optionnelle — [console.anthropic.com](https://console.anthropic.com/), active la création de race par IA et la génération d'exercices sur-mesure |
+| `YOUTUBE_API_KEY` | Optionnelle — [console.cloud.google.com](https://console.cloud.google.com/apis/library/youtube.googleapis.com), intègre une vraie vidéo sous les exercices sur-mesure générés |
 | `NEXT_PUBLIC_SITE_URL` | URL publique du site |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Optionnelles — [console.cloud.google.com](https://console.cloud.google.com/apis/credentials), activent "Continuer avec Google" |
 | `FREE_ACCESS_EMAILS` | Optionnelle — emails séparés par des virgules ayant accès à tout le site sans passer par Stripe |

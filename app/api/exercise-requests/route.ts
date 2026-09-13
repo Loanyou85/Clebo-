@@ -6,6 +6,7 @@ import {
   generateCustomExercise,
   CustomExerciseGenerationUnavailableError,
 } from "@/lib/customExerciseGeneration";
+import { findYoutubeVideo } from "@/lib/youtubeSearch";
 import { SIZE_LABELS, ENVIRONMENT_LABELS } from "@/lib/dogSchema";
 
 const bodySchema = z.object({
@@ -62,6 +63,8 @@ export async function POST(request: Request) {
           : null,
     });
 
+    const video = await findYoutubeVideo(content.videoSearchQuery);
+
     const updated = await prisma.exerciseRequest.update({
       where: { id: created.id },
       data: {
@@ -71,6 +74,7 @@ export async function POST(request: Request) {
         aiCommonMistakes: content.commonMistakes,
         aiDurationWeeks: content.durationWeeks,
         aiVideoSearchQuery: content.videoSearchQuery,
+        aiVideoUrl: video?.embedUrl ?? null,
       },
     });
 

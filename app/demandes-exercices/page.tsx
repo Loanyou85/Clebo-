@@ -87,6 +87,17 @@ export default async function DemandesExercicesPage({
                     <span className="font-bold text-orange-dark">~{req.aiDurationWeeks} semaines</span>
                   </p>
 
+                  {req.aiVideoUrl && (
+                    <div className="aspect-video w-full overflow-hidden rounded-xl">
+                      <iframe
+                        src={req.aiVideoUrl}
+                        className="w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                  )}
+
                   {req.aiVideoSearchQuery && (
                     <a
                       href={youtubeSearchUrl(req.aiVideoSearchQuery)}
@@ -94,7 +105,9 @@ export default async function DemandesExercicesPage({
                       rel="noopener noreferrer"
                       className="text-orange-dark font-semibold text-sm inline-block"
                     >
-                      Rechercher des vidéos de démonstration sur YouTube →
+                      {req.aiVideoUrl
+                        ? "Voir d'autres vidéos sur YouTube →"
+                        : "Rechercher des vidéos de démonstration sur YouTube →"}
                     </a>
                   )}
                 </div>
