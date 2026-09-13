@@ -23,8 +23,20 @@ export async function getCurrentUser(): Promise<User | null> {
   return prisma.user.findUnique({ where: { id: session.userId } });
 }
 
-export function isActiveSubscription(user: Pick<User, "subscriptionStatus">): boolean {
-  return user.subscriptionStatus === "ACTIVE";
+// Liste blanche d'emails (variable d'env FREE_ACCESS_EMAILS, séparés par
+// des virgules) traités comme abonnés sans passer par Stripe — utile pour
+// un accès de test/démo illimité sur un compte donné.
+function hasFreeAccess(email: string): boolean {
+  const list = process.env.FREE_ACCESS_EMAILS;
+  if (!list) return false;
+  return list
+    .split(",")
+    .map((e) => e.trim().toLowerCase())
+    .includes(email.toLowerCase());
+}
+
+export function isActiveSubscription(user: Pick<User, "subscriptionStatus" | "email">): boolean {
+  return user.subscriptionStatus === "ACTIVE" || hasFreeAccess(user.email);
 }
 
 // Connexion via Google : réutilise un compte existant plutôt que d'en
