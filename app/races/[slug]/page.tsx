@@ -1,8 +1,24 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser, isActiveSubscription } from "@/lib/auth";
+
+export async function generateMetadata({ params }: PageProps<"/races/[slug]">): Promise<Metadata> {
+  const { slug } = await params;
+  const breed = await prisma.breed.findUnique({
+    where: { slug },
+    select: { name: true, description: true, imageUrl: true },
+  });
+  if (!breed) return {};
+  return {
+    title: `${breed.name} : caractère, poids et dressage`,
+    description: breed.description.slice(0, 155),
+    alternates: { canonical: `/races/${slug}` },
+    openGraph: { title: `${breed.name} — Clebo`, description: breed.description.slice(0, 155) },
+  };
+}
 
 export default async function RaceDetailPage({ params }: PageProps<"/races/[slug]">) {
   const { slug } = await params;
@@ -25,6 +41,22 @@ export default async function RaceDetailPage({ params }: PageProps<"/races/[slug
 
   return (
     <div className="container-page py-12 grid gap-8 lg:grid-cols-[1fr_1.2fr]">
+      {/* Données structurées : les fiches de race sont la porte d'entrée
+          SEO du site, elles doivent être comprises comme des articles. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: `${breed.name} : caractère, poids et dressage`,
+            description: breed.description,
+            image: breed.imageUrl,
+            about: { "@type": "Thing", name: breed.name },
+            publisher: { "@type": "Organization", name: "Clebo" },
+          }),
+        }}
+      />
       <div>
         <Image src={breed.imageUrl} alt={breed.name} width={600} height={400} className="w-full rounded-2xl object-cover mb-5" />
         <h1 className="font-display text-3xl font-extrabold mb-2">{breed.name}</h1>

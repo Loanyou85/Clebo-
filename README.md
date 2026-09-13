@@ -1,16 +1,53 @@
 # Clebo
 
-Clebo est un SaaS de dressage canin vendu au grand public en France, sur
-abonnement mensuel unique à **27,99€/mois**. Le site permet d'enregistrer
-son ou ses chiens, de suivre des techniques de dressage adaptées à chaque
-race (texte, image, vidéo), de calculer les besoins alimentaires
-quotidiens, et de demander des exercices sur-mesure validés par une
-équipe d'administration.
+Clebo est un SaaS français de dressage canin. Il ne vend pas du contenu —
+celui-ci est déjà gratuit et abondant sur YouTube — mais **un cadre, un
+suivi et une correction** : un diagnostic qui personnalise, un programme
+daté de 30 jours qu'on ne peut pas sauter, et un journal qui mesure la
+progression du chien.
+
+**Modèle économique**
+
+| Niveau | Prix | Contenu |
+|---|---|---|
+| Gratuit | 0 € | Diagnostic et plan personnalisé, 3 premiers jours de n'importe quel programme, fiches de race, calculateur de rations |
+| Programme (offre principale) | **59 € une fois, accès à vie** | Un programme complet de 30 jours, journal de séances, courbe de progression |
+| Suivi Clebo (option) | 14,99 €/mois | Tous les programmes, exercices sur-mesure générés par IA, nouveaux contenus |
+
+**Exclusion produit, non négociable** : Clebo ne traite aucun cas
+d'agressivité, de morsure ou de réactivité. Ces mots-clés détectés dans le
+diagnostic (côté client ET côté serveur, voir `lib/securite.ts`) font
+sortir du tunnel de vente vers `/diagnostic/securite`, qui renvoie vers un
+professionnel en présentiel et n'affiche aucun bouton d'achat.
 
 ## Fonctionnalités
 
+- **Diagnostic d'entrée** (`lib/diagnostic.ts`, `components/Diagnostic.tsx`) :
+  6 questions, une par écran, **sans compte**. La première question est le
+  hero de la page d'accueil : le visiteur agit dans les deux premières
+  secondes. En sortie, un plan personnalisé avec le programme recommandé et
+  ses 3 premières séances en clair, le reste flouté. Le compte n'est
+  demandé qu'à cet instant, pour sauvegarder le plan.
+- **Programmes datés** (`Program`, `ProgramDay`) : 5 programmes de 30 jours
+  (laisse, rappel, solitude, propreté, sauts). Chaque jour : un objectif en
+  une phrase, un exercice de 5-15 min, les répétitions, l'erreur classique
+  à éviter, une vidéo. Les jours futurs sont verrouillés — on ne saute pas
+  le jour 12 — et le contrôle est refait côté serveur, pas seulement à
+  l'affichage.
+- **Journal et courbe de progression** (`SessionLog`, `components/ProgressChart.tsx`) :
+  après chaque séance, une seule question — « combien de réussites sur
+  10 ? ». La courbe est ce qui fait tenir quand la motivation baisse.
+- **Achat unique Stripe** (`mode: "payment"`) : le montant est envoyé en
+  `price_data`, donc **aucun prix à créer dans le tableau de bord Stripe**.
+  Le webhook crée l'accès à vie (`Purchase`), sans doublon ni échec en
+  boucle si Stripe rejoue l'évènement.
+- **Génération du contenu par IA** : les 150 séances sont générées par
+  Claude (`lib/programGeneration.ts`), pilotable **depuis `/admin` par lots
+  de 10** (un lot par clic : générer 30 séances dépasserait la durée
+  maximale d'une fonction serverless). Un programme n'est mis en vente
+  qu'une fois complet. Script CLI équivalent : `npm run programs:generate`.
 - **Comptes utilisateurs** : inscription/connexion par email + mot de
-  passe, session httpOnly signée (30 jours).
+  passe ou « Continuer avec Google », session httpOnly signée (30 jours).
 - **Profils de chiens** : nom, race, taille, poids, âge, environnement de
   vie (campagne / ville / appartement / maison). La race est choisie via
   une barre de recherche (`components/BreedSearch.tsx`) ; si elle
@@ -39,15 +76,31 @@ quotidiens, et de demander des exercices sur-mesure validés par une
   recherche s'affiche. Si l'IA (Claude) n'est pas configurée ou échoue, la
   demande reste "en attente" pour une validation manuelle classique via
   `/admin`.
-- **Alimentation** : calculateur de quantité de croquettes, de repas et
-  d'eau par jour à partir du poids/âge/environnement du chien
-  (`lib/feeding.ts`), et marques de nourriture conseillées par race.
-- **Abonnement unique Stripe** : 27,99€/mois, pas d'essai gratuit, statut
-  vérifié en base (mis à jour par webhook Stripe, jamais fait confiance
-  depuis le cookie client seul).
-- **Contenu premium gardé côté serveur** : le détail complet d'un exercice
-  (déroulé, vidéo) n'est rendu que si l'abonnement de l'utilisateur est
-  actif en base — sinon un teaser avec appel à l'abonnement s'affiche.
+- **Rations** (`/rations`) : calculateur de croquettes, de repas et d'eau
+  par jour (`lib/feeding.ts`). Gratuit, sans compte et indexable : c'est
+  une porte d'entrée SEO.
+- **Contenu premium gardé côté serveur** : l'accès à un programme est
+  décidé en base par `lib/programAccess.ts` (achat unique, abonnement
+  actif, ou liste blanche `FREE_ACCESS_EMAILS`) — jamais depuis le client.
+
+## Direction artistique
+
+Carnet d'entraînement : sportif, concret, consulté dehors sur un téléphone
+avec une main occupée par la laisse. Six valeurs, pas une de plus
+(`app/globals.css`) : `--encre`, `--papier`, `--foret`, `--signal`,
+`--brume`, `--craie`. Titres en Bricolage Grotesque, texte en Inter Tight.
+
+L'orange `--signal` est réservé à **l'action et à la progression** : s'il
+est orange, soit on clique dessus, soit ça mesure un avancement. Le seul
+élément décoratif autorisé est la ligne de progression
+(`components/ProgressLine.tsx`), précisément parce qu'elle porte une
+information.
+
+Contraste AA : le texte des boutons orange est en `--encre` (du blanc sur
+`--signal` ne passe pas AA), et `--signal-texte` sert à l'orange en texte
+sur papier. Toutes les animations (Motion) respectent
+`prefers-reduced-motion`, y compris la section à scroll figé de l'accueil
+qui bascule alors en simple liste.
 
 ## Stack
 
@@ -55,8 +108,10 @@ quotidiens, et de demander des exercices sur-mesure validés par une
 - Prisma + Postgres (dev et prod — nécessaire car le site est destiné à
   être déployé sur un hébergeur serverless, où un fichier SQLite ne
   persisterait pas entre deux déploiements)
-- Stripe Checkout (mode abonnement) + webhook pour la synchronisation du
-  statut d'abonnement
+- Stripe Checkout : `mode: "payment"` pour l'achat unique d'un programme,
+  `mode: "subscription"` pour l'option Suivi Clebo, un seul webhook pour
+  les deux
+- Motion (ex Framer Motion) pour les animations
 - `bcryptjs` pour le hash des mots de passe
 - `proxy.ts` (remplace `middleware.ts` depuis Next 16) : garde de route
   serveur pour les pages qui nécessitent une connexion
@@ -125,7 +180,7 @@ Voir `.env.example`.
 | `COOKIE_SIGNING_SECRET` | Secret de signature du cookie de session (ex: `openssl rand -hex 32`) |
 | `STRIPE_SECRET_KEY` | Dashboard Stripe → Developers → API keys |
 | `STRIPE_WEBHOOK_SECRET` | Créé à l'étape "Webhook" ci-dessous |
-| `STRIPE_PRICE_ID` | Price Stripe récurrent à 27,99€/mois |
+| `STRIPE_PRICE_ID` | Price Stripe récurrent à 14,99 €/mois (option Suivi Clebo). L'achat de programme à 59 € n'a besoin d'aucun price : le montant est envoyé par le code |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Dashboard Stripe → Developers → API keys |
 | `ANTHROPIC_API_KEY` | Optionnelle — [console.anthropic.com](https://console.anthropic.com/), active la création de race par IA et la génération d'exercices sur-mesure |
 | `YOUTUBE_API_KEY` | Optionnelle — [console.cloud.google.com](https://console.cloud.google.com/apis/library/youtube.googleapis.com), intègre une vraie vidéo sous les exercices sur-mesure générés |
@@ -135,9 +190,12 @@ Voir `.env.example`.
 
 ## Configuration Stripe
 
-1. Dashboard Stripe → **Product catalog** → **Add product** → nom
-   "Clebo Premium", pricing **Recurring**, montant **27,99€**, période
-   **Monthly** → copier l'ID du prix (`price_...`) → `STRIPE_PRICE_ID`.
+1. Rien à créer pour l'offre principale : le programme à 59 € est envoyé
+   directement par le code (`price_data`). Uniquement si tu veux activer
+   l'option d'abonnement : Dashboard Stripe → **Product catalog** → **Add
+   product** → nom "Suivi Clebo", pricing **Recurring**, montant
+   **14,99 €**, période **Monthly** → copier l'ID du prix (`price_...`) →
+   `STRIPE_PRICE_ID`.
 2. Dashboard Stripe → **Developers** → **Webhooks** → **Add endpoint** →
    URL `https://<ton-domaine>/api/webhook`, événements
    `checkout.session.completed`, `customer.subscription.updated`,

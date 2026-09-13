@@ -1,112 +1,83 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { computeFeedingPlan } from "@/lib/feeding";
+import RationsCalculator from "@/components/RationsCalculator";
 
-export default async function AlimentationPage({ searchParams }: PageProps<"/rations">) {
+export const metadata: Metadata = {
+  title: "Calculateur de ration pour chien",
+  description:
+    "Combien de croquettes et d'eau par jour pour ton chien ? Calcul gratuit à partir de son poids, de son âge et de son lieu de vie.",
+  alternates: { canonical: "/rations" },
+};
+
+export default async function RationsPage() {
+  // Page gratuite et indexable : le calculateur fonctionne sans compte.
+  // Les chiens enregistrés ne sont qu'un raccourci pour ceux qui en ont.
   const user = await getCurrentUser();
-  if (!user) redirect("/connexion");
-
-  const { dogId } = await searchParams;
-  const dogs = await prisma.dog.findMany({
-    where: { userId: user.id },
-    include: { breed: true },
-    orderBy: { createdAt: "asc" },
-  });
-
-  const selectedDogIdParam = Array.isArray(dogId) ? dogId[0] : dogId;
-  const selectedDog = selectedDogIdParam
-    ? dogs.find((d) => d.id === selectedDogIdParam)
-    : dogs[0];
-
-  const plan = selectedDog ? computeFeedingPlan(selectedDog) : null;
-  const foodBrands = selectedDog
-    ? await prisma.foodBrand.findMany({
-        where: selectedDog.breedId
-          ? { OR: [{ forAllBreeds: true }, { breeds: { some: { breedId: selectedDog.breedId } } }] }
-          : { forAllBreeds: true },
-        orderBy: { name: "asc" },
+  const dogs = user
+    ? await prisma.dog.findMany({
+        where: { userId: user.id },
+        select: { id: true, name: true, weightKg: true, ageMonths: true, environment: true },
+        orderBy: { createdAt: "asc" },
       })
     : [];
 
   return (
-    <div className="container-page py-12">
-      <h1 className="font-display text-3xl font-extrabold mb-2">Alimentation</h1>
-      <p className="text-foreground-muted mb-8 max-w-2xl">
-        La quantité de nourriture et d&apos;eau nécessaire dépend surtout du poids, de l&apos;âge et du
-        niveau d&apos;activité de ton chien. Sélectionne un chien enregistré pour un calcul personnalisé.
+    <div className="container-page py-16 max-w-2xl">
+      <h1 className="titre text-titre-m mb-4">Combien de croquettes par jour pour ton chien ?</h1>
+      <p className="prose-clebo text-encre-doux mb-10">
+        La quantité dépend surtout du poids, de l&apos;âge et du niveau d&apos;activité. Ce calcul
+        est gratuit et ne demande pas de compte.
       </p>
 
-      {dogs.length === 0 ? (
-        <div className="card-surface p-8 text-center text-foreground-muted">
-          Enregistre d&apos;abord un chien pour obtenir un calcul personnalisé.{" "}
-          <Link href="/chiens/nouveau" className="text-orange-dark font-semibold">
-            Ajouter un chien
-          </Link>
-        </div>
-      ) : (
-        <>
-          <div className="flex flex-wrap gap-2 mb-6">
-            {dogs.map((dog) => (
-              <Link
-                key={dog.id}
-                href={`/rations?dogId=${dog.id}`}
-                className={dog.id === selectedDog?.id ? "btn-primary text-sm py-2 px-4" : "btn-outline text-sm py-2 px-4"}
-              >
-                {dog.name}
-              </Link>
-            ))}
+      <RationsCalculator />
+
+      {dogs.length > 0 && (
+        <section className="mt-12">
+          <h2 className="titre text-titre-s mb-4">Tes chiens enregistrés</h2>
+          <div className="flex flex-col gap-3">
+            {dogs.map((dog) => {
+              const plan = computeFeedingPlan(dog);
+              return (
+                <div key={dog.id} className="card-surface p-5">
+                  <p className="font-semibold mb-2">{dog.name}</p>
+                  <p className="text-sm text-encre-doux">
+                    {plan.dailyFoodGrams} g de croquettes · {plan.dailyWaterLiters} L d&apos;eau ·{" "}
+                    {plan.mealsPerDay} repas par jour
+                  </p>
+                </div>
+              );
+            })}
           </div>
-
-          {plan && selectedDog && (
-            <div className="grid gap-8 lg:grid-cols-[1fr_1.2fr]">
-              <div className="card-surface p-6">
-                <h2 className="font-display font-bold text-lg mb-4">
-                  Plan quotidien pour {selectedDog.name}
-                </h2>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-foreground-muted">Croquettes / jour</p>
-                    <p className="font-bold text-2xl text-orange-dark">{plan.dailyFoodGrams} g</p>
-                  </div>
-                  <div>
-                    <p className="text-foreground-muted">Eau / jour</p>
-                    <p className="font-bold text-2xl text-orange-dark">{plan.dailyWaterLiters} L</p>
-                  </div>
-                  <div>
-                    <p className="text-foreground-muted">Nombre de repas</p>
-                    <p className="font-bold text-2xl text-orange-dark">{plan.mealsPerDay}</p>
-                  </div>
-                  <div>
-                    <p className="text-foreground-muted">Besoin énergétique</p>
-                    <p className="font-bold text-2xl text-orange-dark">{plan.dailyKcal} kcal</p>
-                  </div>
-                </div>
-                <p className="text-xs text-foreground-muted mt-4">
-                  Estimation basée sur le poids ({selectedDog.weightKg} kg), l&apos;âge et l&apos;environnement
-                  de vie renseignés. À ajuster avec ton vétérinaire en cas de doute (croissance, gestation,
-                  pathologie).
-                </p>
-              </div>
-
-              <div>
-                <h2 className="font-display font-bold text-lg mb-3">
-                  Marques conseillées{selectedDog.breed ? ` pour un ${selectedDog.breed.name}` : ""}
-                </h2>
-                <div className="grid sm:grid-cols-2 gap-3">
-                  {foodBrands.map((brand) => (
-                    <div key={brand.id} className="card-surface p-4">
-                      <p className="font-semibold">{brand.name}</p>
-                      <p className="text-xs text-foreground-muted">{brand.description}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-        </>
+        </section>
       )}
+
+      <section className="mt-12">
+        <h2 className="titre text-titre-s mb-3">Comment ce calcul est fait</h2>
+        <p className="prose-clebo text-encre-doux mb-4">
+          On part du besoin énergétique au repos, la formule vétérinaire standard : 70 × poids^0,75
+          en kilocalories par jour. On applique ensuite un coefficient d&apos;activité selon
+          l&apos;âge et le lieu de vie — un chiot dépense bien plus qu&apos;un chien âgé, un chien
+          qui vit à la campagne plus qu&apos;un chien en appartement.
+        </p>
+        <p className="prose-clebo text-encre-doux">
+          Pour l&apos;eau, on compte environ 60 ml par kilo et par jour. Augmente en cas de chaleur,
+          d&apos;effort ou d&apos;alimentation sèche exclusive.
+        </p>
+      </section>
+
+      <section className="mt-12">
+        <h2 className="titre text-titre-s mb-3">Ton chien a un problème de comportement ?</h2>
+        <p className="prose-clebo text-encre-doux mb-5">
+          Laisse, rappel, propreté, solitude, sauts : le diagnostic te dit en 40 secondes par où
+          commencer, gratuitement.
+        </p>
+        <Link href="/diagnostic" className="btn-primary">
+          Commencer le diagnostic
+        </Link>
+      </section>
     </div>
   );
 }
