@@ -5,6 +5,7 @@ export const dogSchema = z.object({
   breedId: z.string().min(1).nullable(),
   isMixed: z.boolean(),
   mixedBreedNote: z.string().trim().max(200).optional().nullable(),
+  characteristics: z.string().trim().max(500).optional().nullable(),
   size: z.enum(["PETIT", "MOYEN", "GRAND"]),
   weightKg: z.coerce.number().positive("Le poids doit être positif.").max(120),
   ageMonths: z.coerce.number().int().min(0).max(300),

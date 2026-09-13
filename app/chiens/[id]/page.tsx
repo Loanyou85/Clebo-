@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { computeFeedingPlan } from "@/lib/feeding";
+import { getEffectiveBreedIds } from "@/lib/dogBreedMatch";
 import { SIZE_LABELS, ENVIRONMENT_LABELS } from "@/lib/dogSchema";
 import DogForm from "@/components/DogForm";
 import DeleteDogButton from "@/components/DeleteDogButton";
@@ -19,9 +20,14 @@ export default async function ChienPage({ params }: PageProps<"/chiens/[id]">) {
   const breeds = await prisma.breed.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true } });
   const feedingPlan = computeFeedingPlan(dog);
 
-  const exercises = dog.breedId
+  const effectiveBreedIds = await getEffectiveBreedIds(dog);
+  const matchedBreeds = effectiveBreedIds.length
+    ? await prisma.breed.findMany({ where: { id: { in: effectiveBreedIds } }, select: { id: true, name: true, slug: true } })
+    : [];
+
+  const exercises = effectiveBreedIds.length
     ? await prisma.exercise.findMany({
-        where: { OR: [{ forAllBreeds: true }, { breeds: { some: { breedId: dog.breedId } } }] },
+        where: { OR: [{ forAllBreeds: true }, { breeds: { some: { breedId: { in: effectiveBreedIds } } } }] },
         orderBy: { title: "asc" },
       })
     : await prisma.exercise.findMany({ where: { forAllBreeds: true }, orderBy: { title: "asc" } });
@@ -47,6 +53,7 @@ export default async function ChienPage({ params }: PageProps<"/chiens/[id]">) {
               isMixed: dog.isMixed,
               breedId: dog.breedId,
               mixedBreedNote: dog.mixedBreedNote,
+              characteristics: dog.characteristics,
               size: dog.size,
               weightKg: dog.weightKg,
               ageMonths: dog.ageMonths,
@@ -82,8 +89,30 @@ export default async function ChienPage({ params }: PageProps<"/chiens/[id]">) {
       </div>
 
       <div>
+        {dog.isMixed && dog.aiTrainingSummary && (
+          <div className="card-surface p-5 mb-6 border-orange">
+            <p className="badge mb-2">Analyse IA du mélange de races</p>
+            <p className="text-sm text-foreground-muted mb-3">{dog.aiTrainingSummary}</p>
+            {matchedBreeds.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                <span className="text-xs text-foreground-muted">Races proches détectées :</span>
+                {matchedBreeds.map((b) => (
+                  <Link key={b.id} href={`/races/${b.slug}`} className="badge">
+                    {b.name}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         <h2 className="font-display font-bold text-lg mb-3">
-          Exercices de dressage recommandés{dog.breed ? ` pour un ${dog.breed.name}` : ""}
+          Exercices de dressage recommandés
+          {dog.breed
+            ? ` pour un ${dog.breed.name}`
+            : matchedBreeds.length > 0
+              ? ` pour ${dog.name} (proche de ${matchedBreeds.map((b) => b.name).join(", ")})`
+              : ""}
         </h2>
         <div className="space-y-3">
           {exercises.map((ex) => (

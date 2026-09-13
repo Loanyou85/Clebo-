@@ -12,7 +12,13 @@ quotidiens, et de demander des exercices sur-mesure validés par une
 - **Comptes utilisateurs** : inscription/connexion par email + mot de
   passe, session httpOnly signée (30 jours).
 - **Profils de chiens** : nom, race (ou croisé), taille, poids, âge,
-  environnement de vie (campagne / ville / appartement / maison).
+  environnement de vie (campagne / ville / appartement / maison). Pour un
+  chien croisé, le client indique les races dominantes en texte libre :
+  une IA (Claude) analyse cette description pour rattacher le chien aux
+  races du site les plus proches (réutilisation des exercices/marques déjà
+  associés) et générer un résumé personnalisé du programme de dressage
+  (voir `lib/mixedBreedAnalysis.ts`). Optionnelle : sans `ANTHROPIC_API_KEY`,
+  le chien croisé reçoit simplement les exercices "toutes races".
 - **Races de chien** : 15 races courantes en France pré-chargées, chacune
   avec sa propre illustration, sa description, son tempérament et son
   gabarit de poids adulte. Ajouter une race = ajouter une entrée dans
@@ -116,6 +122,7 @@ Voir `.env.example`.
 | `STRIPE_WEBHOOK_SECRET` | Créé à l'étape "Webhook" ci-dessous |
 | `STRIPE_PRICE_ID` | Price Stripe récurrent à 27,99€/mois |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Dashboard Stripe → Developers → API keys |
+| `ANTHROPIC_API_KEY` | Optionnelle — [console.anthropic.com](https://console.anthropic.com/), active l'analyse IA des chiens croisés |
 | `NEXT_PUBLIC_SITE_URL` | URL publique du site |
 
 ## Configuration Stripe
