@@ -14,20 +14,20 @@ const NAV_LINKS = [
 
 export default function Header({ user }: HeaderProps) {
   return (
-    <header className="border-b border-brume bg-papier/95 backdrop-blur sticky top-0 z-20">
+    <header className="border-b border-bordure bg-fond/95 backdrop-blur sticky top-0 z-20">
       <div className="container-page py-4 flex items-center justify-between gap-4">
         <Link href="/" className="titre text-titre-s">
           Clebo
         </Link>
 
-        <nav className="hidden md:flex items-center gap-6 text-sm font-semibold text-encre-doux">
+        <nav className="hidden md:flex items-center gap-6 text-sm font-semibold text-sourdine">
           {NAV_LINKS.map((link) => (
-            <Link key={link.href} href={link.href} className="hover:text-encre transition-colors">
+            <Link key={link.href} href={link.href} className="hover:text-texte transition-colors">
               {link.label}
             </Link>
           ))}
           {user?.isAdmin && (
-            <Link href="/admin" className="hover:text-encre transition-colors">
+            <Link href="/admin" className="hover:text-texte transition-colors">
               Admin
             </Link>
           )}
@@ -43,7 +43,7 @@ export default function Header({ user }: HeaderProps) {
             </>
           ) : (
             <>
-              <Link href="/connexion" className="text-sm font-semibold text-encre-doux hover:text-encre transition-colors">
+              <Link href="/connexion" className="text-sm font-semibold text-sourdine hover:text-texte transition-colors">
                 Connexion
               </Link>
               <Link href="/diagnostic" className="btn-primary text-sm py-2 px-4">

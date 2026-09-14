@@ -85,7 +85,7 @@ function Bloc({ titre, children }: { titre: string; children: React.ReactNode })
   return (
     <section className="mb-8">
       <h2 className="titre text-titre-s mb-2">{titre}</h2>
-      <p className="prose-clebo text-encre-doux">{children}</p>
+      <p className="prose-clebo text-sourdine">{children}</p>
     </section>
   );
 }

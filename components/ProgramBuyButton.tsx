@@ -55,7 +55,7 @@ export default function ProgramBuyButton({ programSlug, priceCents, loggedIn }: 
   return (
     <div>
       {loggedIn && (
-        <label className="flex gap-3 items-start text-sm text-encre-doux mb-4 prose-clebo cursor-pointer">
+        <label className="flex gap-3 items-start text-sm text-sourdine mb-4 prose-clebo cursor-pointer">
           <input
             type="checkbox"
             checked={renonciation}
@@ -79,7 +79,7 @@ export default function ProgramBuyButton({ programSlug, priceCents, loggedIn }: 
       <button type="button" onClick={acheter} disabled={chargement} className="btn-primary w-full sm:w-auto">
         {chargement ? "Ouverture du paiement…" : `Commencer le programme — ${prix} €`}
       </button>
-      <p className="text-sm text-encre-doux mt-3">
+      <p className="text-sm text-sourdine mt-3">
         Paiement unique, accès à vie. Satisfait ou remboursé pendant 30 jours.
       </p>
       {erreur && <p className="text-sm text-red-700 mt-2">{erreur}</p>}

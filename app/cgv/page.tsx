@@ -18,7 +18,7 @@ export default function CgvPage() {
   return (
     <div className="container-page py-16 max-w-2xl">
       <h1 className="titre text-titre-m mb-3">Conditions générales de vente</h1>
-      <p className="text-sm text-encre-doux mb-10">Dernière mise à jour : à la mise en ligne du site.</p>
+      <p className="text-sm text-sourdine mb-10">Dernière mise à jour : à la mise en ligne du site.</p>
 
       <Article titre="1. Vendeur">
         À compléter : nom ou dénomination, statut juridique, SIRET, adresse et email de contact —
@@ -99,7 +99,7 @@ function Article({ titre, children }: { titre: string; children: React.ReactNode
   return (
     <section className="mb-8">
       <h2 className="titre text-titre-s mb-2">{titre}</h2>
-      <p className="prose-clebo text-encre-doux">{children}</p>
+      <p className="prose-clebo text-sourdine">{children}</p>
     </section>
   );
 }

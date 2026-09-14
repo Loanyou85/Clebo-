@@ -11,7 +11,7 @@ interface Point {
 export default function ProgressChart({ points }: { points: Point[] }) {
   if (points.length === 0) {
     return (
-      <p className="text-sm text-encre-doux">
+      <p className="text-sm text-sourdine">
         Ta courbe apparaît ici dès la première séance validée.
       </p>
     );
@@ -34,9 +34,12 @@ export default function ProgressChart({ points }: { points: Point[] }) {
 
   return (
     <div>
+      {/* Largeur bornée : le SVG conserve son rapport 320x120, donc sans
+          borne il s'étire sur toute la largeur du panneau et occupe une
+          demi-page pour deux ou trois points. */}
       <svg
         viewBox={`0 0 ${largeur} ${hauteur}`}
-        className="w-full h-auto"
+        className="w-full max-w-[420px] h-auto"
         role="img"
         aria-label={`Progression : ${premier.successes} sur 10 au jour ${premier.dayNumber}, ${dernier.successes} sur 10 au jour ${dernier.dayNumber}.`}
       >
@@ -45,7 +48,7 @@ export default function ProgressChart({ points }: { points: Point[] }) {
           y1={hauteur - marge}
           x2={largeur - marge}
           y2={hauteur - marge}
-          stroke="var(--brume)"
+          stroke="var(--bordure)"
           strokeWidth="1"
         />
         <path d={chemin} fill="none" stroke="var(--signal)" strokeWidth="2.5" strokeLinejoin="round" />
@@ -54,7 +57,7 @@ export default function ProgressChart({ points }: { points: Point[] }) {
         ))}
       </svg>
 
-      <p className="text-sm text-encre-doux mt-2">
+      <p className="text-sm text-sourdine mt-2">
         {points.length === 1
           ? `${premier.successes}/10 au jour ${premier.dayNumber}.`
           : `De ${premier.successes}/10 au jour ${premier.dayNumber} à ${dernier.successes}/10 au jour ${dernier.dayNumber}.`}

@@ -35,7 +35,7 @@ export default async function EspacePage() {
       {enrollments.length === 0 ? (
         <div className="card-surface p-6 mb-10">
           <p className="font-semibold mb-2">Tu n&apos;as pas encore de programme en cours.</p>
-          <p className="text-sm text-encre-doux mb-5 prose-clebo">
+          <p className="text-sm text-sourdine mb-5 prose-clebo">
             Fais le diagnostic pour savoir lequel correspond au problème de ton chien. Les trois
             premiers jours sont gratuits.
           </p>
@@ -50,14 +50,14 @@ export default async function EspacePage() {
             const prochainJour = Math.min(enrollment.program.durationDays, faites + 1);
             return (
               <div key={enrollment.id} className="card-surface p-6">
-                <p className="text-sm text-encre-doux mb-1">{enrollment.dog.name}</p>
+                <p className="text-sm text-sourdine mb-1">{enrollment.dog.name}</p>
                 <p className="font-semibold text-lg mb-4">{enrollment.program.title}</p>
 
                 <div className="mb-5">
                   <ProgressChart points={enrollment.sessions} />
                 </div>
 
-                <p className="text-sm text-encre-doux mb-4">
+                <p className="text-sm text-sourdine mb-4">
                   {faites} séance{faites > 1 ? "s" : ""} faite{faites > 1 ? "s" : ""} sur{" "}
                   {enrollment.program.durationDays}
                 </p>
@@ -74,7 +74,7 @@ export default async function EspacePage() {
       <h2 className="titre text-titre-s mb-4">Mes chiens</h2>
       {dogs.length === 0 ? (
         <div className="card-surface p-6">
-          <p className="text-sm text-encre-doux mb-4">
+          <p className="text-sm text-sourdine mb-4">
             Enregistre ton chien pour adapter les séances à sa race, son âge et son environnement.
           </p>
           <Link href="/chiens/nouveau" className="btn-outline">
@@ -87,10 +87,10 @@ export default async function EspacePage() {
             <Link
               key={dog.id}
               href={`/chiens/${dog.id}`}
-              className="card-surface p-5 hover:border-encre transition-colors"
+              className="card-surface p-5 hover:border-texte transition-colors"
             >
               <p className="font-semibold">{dog.name}</p>
-              <p className="text-sm text-encre-doux">
+              <p className="text-sm text-sourdine">
                 {dog.breed?.name ?? "Race inconnue"} · {dog.weightKg} kg
               </p>
             </Link>

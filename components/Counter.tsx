@@ -31,7 +31,7 @@ export default function Counter({ valeur, duree = 900 }: { valeur: number; duree
   }, [visible, valeur, duree, reduceMotion]);
 
   return (
-    <span ref={ref} className="font-semibold text-encre">
+    <span ref={ref} className="font-semibold text-texte">
       {affiche}
     </span>
   );

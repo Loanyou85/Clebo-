@@ -19,24 +19,24 @@ export default function ContactPage() {
       <h1 className="titre text-titre-m mb-8">Contact</h1>
 
       <div className="card-surface p-5 mb-10">
-        <p className="text-sm text-encre-doux">
+        <p className="text-sm text-sourdine">
           À compléter : adresse email de contact (réelle et relevée) et adresse postale.
         </p>
       </div>
 
       <h2 className="titre text-titre-s mb-3">Demander un remboursement</h2>
-      <p className="prose-clebo text-encre-doux mb-8">
+      <p className="prose-clebo text-sourdine mb-8">
         Écris-nous dans les 30 jours suivant ton achat, sans avoir à te justifier. Le remboursement
         est effectué sur le moyen de paiement d&apos;origine.
       </p>
 
       <h2 className="titre text-titre-s mb-3">Résilier le Suivi Clebo</h2>
-      <p className="prose-clebo text-encre-doux mb-8">
+      <p className="prose-clebo text-sourdine mb-8">
         La résiliation se fait en un clic depuis ton espace, sans passer par nous, et sans préavis.
       </p>
 
       <h2 className="titre text-titre-s mb-3">Ton chien grogne, pince ou mord</h2>
-      <p className="prose-clebo text-encre-doux">
+      <p className="prose-clebo text-sourdine">
         Ces situations ne se traitent pas par email et ne relèvent pas de Clebo.{" "}
         <Link href="/diagnostic/securite" className="text-signal-texte font-semibold">
           Voici ce qu&apos;il faut faire

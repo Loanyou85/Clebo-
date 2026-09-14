@@ -81,24 +81,24 @@ export default function RationsCalculator() {
         <div className="card-surface p-6">
           <div className="grid grid-cols-2 gap-6">
             <div>
-              <p className="text-sm text-encre-doux mb-1">Croquettes par jour</p>
+              <p className="text-sm text-sourdine mb-1">Croquettes par jour</p>
               <p className="titre text-titre-s">{plan.dailyFoodGrams} g</p>
             </div>
             <div>
-              <p className="text-sm text-encre-doux mb-1">Eau par jour</p>
+              <p className="text-sm text-sourdine mb-1">Eau par jour</p>
               <p className="titre text-titre-s">{plan.dailyWaterLiters} L</p>
             </div>
             <div>
-              <p className="text-sm text-encre-doux mb-1">Repas par jour</p>
+              <p className="text-sm text-sourdine mb-1">Repas par jour</p>
               <p className="titre text-titre-s">{plan.mealsPerDay}</p>
             </div>
             <div>
-              <p className="text-sm text-encre-doux mb-1">Besoin énergétique</p>
+              <p className="text-sm text-sourdine mb-1">Besoin énergétique</p>
               <p className="titre text-titre-s">{plan.dailyKcal} kcal</p>
             </div>
           </div>
 
-          <p className="text-sm text-encre-doux mt-6 prose-clebo">
+          <p className="text-sm text-sourdine mt-6 prose-clebo">
             Estimation pour une croquette adulte standard (environ 3 500 kcal/kg) : vérifie la
             densité indiquée sur ton sac, elle change la quantité. À ajuster avec ton vétérinaire en
             cas de croissance, de gestation, de stérilisation ou de maladie.
@@ -106,7 +106,7 @@ export default function RationsCalculator() {
         </div>
       ) : (
         <div className="card-surface p-6">
-          <p className="text-sm text-encre-doux">
+          <p className="text-sm text-sourdine">
             Entre le poids et l&apos;âge de ton chien pour obtenir ses quantités.
           </p>
         </div>

@@ -82,11 +82,11 @@ export default function ProgramGenerateButton({ programSlug, total, attendu }: P
       </button>
 
       {chargement && (
-        <p className="text-sm text-encre-doux mt-2">
+        <p className="text-sm text-sourdine mt-2">
           Laisse cet onglet ouvert, ça prend quelques minutes pour un programme entier.
         </p>
       )}
-      {message && !chargement && <p className="text-sm text-encre-doux mt-2">{message}</p>}
+      {message && !chargement && <p className="text-sm text-sourdine mt-2">{message}</p>}
       {erreur && <p className="text-sm text-red-700 mt-2">{erreur}</p>}
     </div>
   );

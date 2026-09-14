@@ -102,7 +102,7 @@ export default function Diagnostic({ races, reponseInitiale }: DiagnosticProps) 
     <div>
       <ProgressLine progress={progression} className="mb-8" />
 
-      <p className="text-sm text-encre-doux mb-2">
+      <p className="text-sm text-sourdine mb-2">
         Question {index + 1} sur {QUESTIONS.length}
       </p>
 
@@ -149,13 +149,13 @@ export default function Diagnostic({ races, reponseInitiale }: DiagnosticProps) 
         <button
           type="button"
           onClick={() => setIndex(index - 1)}
-          className="mt-6 text-sm font-semibold text-encre-doux hover:text-encre transition-colors"
+          className="mt-6 text-sm font-semibold text-sourdine hover:text-texte transition-colors"
         >
           Revenir à la question précédente
         </button>
       )}
 
-      {chargement && <p className="mt-6 text-sm text-encre-doux">On construit ton plan…</p>}
+      {chargement && <p className="mt-6 text-sm text-sourdine">On construit ton plan…</p>}
       {erreur && <p className="mt-6 text-sm text-red-700">{erreur}</p>}
     </div>
   );

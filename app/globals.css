@@ -1,95 +1,139 @@
 @import "tailwindcss";
 
-/* Clebo — carnet d'entraînement. Six valeurs, pas une de plus.
-   L'orange --signal est réservé à l'action et à la progression : s'il est
-   orange, soit on clique dessus, soit ça mesure un avancement. */
+/* ============================================================
+   Clebo — jeu de couleurs unique.
+   AUCUNE couleur ne doit être écrite en dur ailleurs que dans ce bloc :
+   c'est ce qui permet de basculer tout le site entre clair et sombre
+   sans toucher au reste du code, et donc de comparer les deux sur du
+   vrai trafic.
+
+   Thème CLAIR par défaut. Le thème sombre s'active par la classe
+   `theme-sombre` sur <html> (voir app/layout.tsx et la variable
+   d'environnement THEME).
+   ============================================================ */
 :root {
-  --encre: #15211b;
-  --papier: #faf8f3;
-  --foret: #1e3a2b;
-  --signal: #ff6b2c;
-  --brume: #e4e8e0;
-  --craie: #ffffff;
+  /* Couleur de marque — inchangée */
+  --signal: #f97316;
+  --signal-clair: #fb923c;
+  --signal-sombre: #ea580c;
 
-  /* Dérivés strictement nécessaires au contraste AA (le brief l'exige) :
-     --signal pur ne passe pas AA en texte sur --papier (2.6:1), et du blanc
-     sur --signal ne le passe pas non plus (2.8:1). D'où un orange foncé
-     pour le texte, et de l'encre — pas du blanc — sur les boutons orange. */
-  --encre-doux: #5a6560;
-  --signal-texte: #c2470a;
-  --foret-doux: #c9d6cc;
+  /* Base claire */
+  --fond: #fafaf9;
+  --surface: #ffffff;
+  --surface-2: #f5f5f4;
+  --bordure: #e7e5e4;
+  --texte: #1c1917;
+  --sourdine: #78716c;
 
-  --r-petit: 4px;
-  --r-grand: 20px;
+  /* Orange EN TEXTE : #F97316 sur un fond clair ne donne que 2,9:1, sous
+     le seuil AA. Sur fond sombre il passe à 7:1 et reste donc tel quel
+     (voir le bloc .theme-sombre). */
+  --signal-texte: #c2410c;
 
-  /* Anciens noms de la première version du site, remappés sur la nouvelle
-     palette : les pages pas encore reprises une à une (races, espace
-     connecté, admin…) basculent ainsi immédiatement sur la bonne palette
-     au lieu de perdre leurs styles. À retirer quand toutes les pages
-     utiliseront les six valeurs ci-dessus. */
-  --background: var(--papier);
-  --background-muted: var(--brume);
-  --surface: var(--craie);
-  --foreground: var(--encre);
-  --foreground-muted: var(--encre-doux);
-  --border-subtle: var(--brume);
-  --orange: var(--signal);
-  --orange-dark: var(--signal-texte);
-  --orange-light: #ffe8dc;
+  /* Accents secondaires — usage strictement limité : dégradés des cartes
+     01/02/03, illustrations du bento, états de réussite. Nulle part ailleurs. */
+  --ambre: #fbbf24;
+  --pousse: #34d399;
+  --alerte: #f43f5e;
+
+  /* Texte posé SUR un aplat orange : de l'encre, jamais du blanc
+     (blanc sur --signal = 2,8:1, échec AA ; encre = 6,3:1). */
+  --sur-signal: #1c1917;
+
+  --halo: radial-gradient(60% 60% at 50% 0%, rgba(249, 115, 22, 0.14), transparent 70%);
+  --grad-1: linear-gradient(140deg, #f97316, #fbbf24);
+  --grad-2: linear-gradient(140deg, #fb7185, #f97316);
+  --grad-3: linear-gradient(140deg, #34d399, #a3e635);
+
+  --r-petit: 8px;
+  --r-grand: 24px;
+}
+
+.theme-sombre {
+  --fond: #0c0a09;
+  --surface: #1a1614;
+  --surface-2: #241e1a;
+  --bordure: #2e2724;
+  --texte: #fafaf9;
+  --sourdine: #a8a29e;
+
+  /* Sur fond sombre l'orange de marque passe AA en texte : on garde la
+     couleur exacte de la marque. */
+  --signal-texte: #f97316;
+
+  --halo: radial-gradient(60% 60% at 50% 0%, rgba(249, 115, 22, 0.22), transparent 70%);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-background-muted: var(--background-muted);
-  --color-surface: var(--surface);
-  --color-foreground: var(--foreground);
-  --color-foreground-muted: var(--foreground-muted);
-  --color-border-subtle: var(--border-subtle);
-  --color-orange: var(--orange);
-  --color-orange-dark: var(--orange-dark);
-  --color-orange-light: var(--orange-light);
-
-  --color-encre: var(--encre);
-  --color-encre-doux: var(--encre-doux);
-  --color-papier: var(--papier);
-  --color-foret: var(--foret);
-  --color-foret-doux: var(--foret-doux);
   --color-signal: var(--signal);
+  --color-signal-clair: var(--signal-clair);
+  --color-signal-sombre: var(--signal-sombre);
   --color-signal-texte: var(--signal-texte);
-  --color-brume: var(--brume);
-  --color-craie: var(--craie);
+  --color-sur-signal: var(--sur-signal);
+  --color-fond: var(--fond);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-bordure: var(--bordure);
+  --color-texte: var(--texte);
+  --color-sourdine: var(--sourdine);
+  --color-ambre: var(--ambre);
+  --color-pousse: var(--pousse);
+  --color-alerte: var(--alerte);
 
-  /* Échelle typographique du brief : 14 / 16 / 18 / 24 / 32 / 48 / 72.
-     Nommée à part pour ne pas décaler l'échelle Tailwind par défaut. */
+  /* Échelle typographique : 40px en mobile, 76px en desktop pour le titre
+     principal, nommée à part pour ne pas décaler l'échelle Tailwind. */
   --text-titre-s: 1.5rem;
-  --text-titre-m: 2rem;
-  --text-titre-l: 3rem;
-  --text-titre-xl: 4.5rem;
+  --text-titre-m: 2.5rem;
+  --text-titre-l: 3.5rem;
+  --text-titre-xl: 4.75rem;
 
   --font-display: var(--font-display);
   --font-body: var(--font-body);
+
+  /* Anciens noms, remappés : les pages pas encore reprises une à une
+     (espace connecté, admin, races…) suivent le thème sans modification.
+     À retirer quand tout le site utilisera les noms ci-dessus. */
+  --color-encre: var(--texte);
+  --color-encre-doux: var(--sourdine);
+  --color-papier: var(--fond);
+  --color-craie: var(--surface);
+  --color-brume: var(--bordure);
+  --color-foret: var(--surface-2);
+  --color-foret-doux: var(--sourdine);
+  --color-background: var(--fond);
+  --color-background-muted: var(--surface-2);
+  --color-foreground: var(--texte);
+  --color-foreground-muted: var(--sourdine);
+  --color-border-subtle: var(--bordure);
+  --color-orange: var(--signal);
+  --color-orange-dark: var(--signal-texte);
+  --color-orange-light: var(--surface-2);
 }
 
 html {
   color-scheme: light;
 }
 
+.theme-sombre {
+  color-scheme: dark;
+}
+
 body {
-  background: var(--papier);
-  color: var(--encre);
+  background: var(--fond);
+  color: var(--texte);
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Titres : Bricolage Grotesque, graisse haute, interlignage serré. */
+/* ---------- Typographie ---------- */
+
 .titre {
   font-family: var(--font-display);
   font-weight: 800;
-  line-height: 0.98;
-  letter-spacing: -0.02em;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
 }
 
-/* Longueur de ligne sous 70 caractères pour tout texte courant. */
 .prose-clebo {
   max-width: 62ch;
   line-height: 1.55;
@@ -102,21 +146,64 @@ body {
   padding-inline: 20px;
 }
 
-/* Navigation clavier visible partout (exigence d'accessibilité). */
 :focus-visible {
   outline: 2px solid var(--signal);
   outline-offset: 2px;
   border-radius: var(--r-petit);
 }
 
-/* Surface posée sur le papier. Volontairement sans ombre : la hiérarchie
-   se lit dans la taille et l'espacement, pas dans une répétition de boîtes
-   identiques. */
-.card-surface {
-  border: 1px solid var(--brume);
-  background: var(--craie);
+/* ---------- Surfaces ----------
+   Sur fond sombre une ombre portée ne se voit pas : c'est le contour de
+   1px qui dessine la profondeur. Même règle en clair pour que les deux
+   thèmes restent structurellement identiques. */
+
+.panneau {
+  border: 1px solid var(--bordure);
+  background: var(--surface);
   border-radius: var(--r-grand);
 }
+
+.panneau-2 {
+  border: 1px solid var(--bordure);
+  background: var(--surface-2);
+  border-radius: var(--r-grand);
+}
+
+.panneau:hover {
+  border-color: color-mix(in srgb, var(--bordure) 40%, var(--texte));
+}
+
+/* Alias de l'ancienne version du site. */
+.card-surface {
+  border: 1px solid var(--bordure);
+  background: var(--surface);
+  border-radius: var(--r-grand);
+}
+
+/* ---------- Halo ----------
+   Un seul par grande section. Dégradé radial, jamais un filtre blur sur
+   une grande surface (coût GPU). */
+
+.halo {
+  position: absolute;
+  inset-inline: 0;
+  height: 420px;
+  background: var(--halo);
+  pointer-events: none;
+  animation: pulse-halo 8s ease-in-out infinite;
+}
+
+@keyframes pulse-halo {
+  0%,
+  100% {
+    opacity: 0.65;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ---------- Boutons ---------- */
 
 .btn-primary {
   display: inline-flex;
@@ -124,23 +211,25 @@ body {
   justify-content: center;
   font-weight: 700;
   background: var(--signal);
-  color: var(--encre);
+  color: var(--sur-signal);
   border-radius: var(--r-petit);
   padding: 14px 24px;
-  transition: transform 120ms ease, background-color 120ms ease;
+  transition: transform 120ms ease, background-color 120ms ease, box-shadow 120ms ease;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #ff7d45;
+  background: var(--signal-clair);
+  box-shadow: inset 0 0 24px rgba(255, 255, 255, 0.25);
 }
 
 .btn-primary:active:not(:disabled) {
+  background: var(--signal-sombre);
   transform: scale(0.97);
 }
 
 .btn-primary:disabled {
-  background: var(--brume);
-  color: var(--encre-doux);
+  background: var(--surface-2);
+  color: var(--sourdine);
   cursor: not-allowed;
 }
 
@@ -149,16 +238,16 @@ body {
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  border: 1.5px solid var(--encre);
-  color: var(--encre);
-  background: transparent;
+  border: 1px solid var(--bordure);
+  color: var(--texte);
+  background: var(--surface);
   border-radius: var(--r-petit);
-  padding: 12px 24px;
-  transition: transform 120ms ease, background-color 120ms ease;
+  padding: 13px 24px;
+  transition: transform 120ms ease, border-color 120ms ease;
 }
 
 .btn-outline:hover:not(:disabled) {
-  background: var(--brume);
+  border-color: color-mix(in srgb, var(--bordure) 30%, var(--texte));
 }
 
 .btn-outline:active:not(:disabled) {
@@ -170,8 +259,8 @@ body {
   cursor: not-allowed;
 }
 
-/* Grande réponse tactile du diagnostic : pleine largeur, 56px de haut,
-   pensée pour un pouce avec l'autre main occupée par la laisse. */
+/* Grande réponse tactile du diagnostic : pensée pour un pouce, avec
+   l'autre main occupée par la laisse. */
 .choix {
   display: flex;
   align-items: center;
@@ -179,69 +268,106 @@ body {
   min-height: 56px;
   text-align: left;
   font-weight: 600;
-  background: var(--craie);
-  color: var(--encre);
-  border: 1.5px solid var(--brume);
+  background: var(--surface);
+  color: var(--texte);
+  border: 1px solid var(--bordure);
   border-radius: var(--r-petit);
   padding: 12px 16px;
   transition: transform 120ms ease, border-color 120ms ease;
 }
 
 .choix:hover {
-  border-color: var(--encre);
+  border-color: var(--signal);
 }
 
 .choix:active {
   transform: scale(0.97);
 }
 
-.choix[aria-pressed="true"] {
-  border-color: var(--signal);
-  box-shadow: inset 0 0 0 1px var(--signal);
-}
-
 .input-field {
   width: 100%;
-  border: 1.5px solid var(--brume);
+  border: 1px solid var(--bordure);
   border-radius: var(--r-petit);
   padding: 12px 16px;
-  background: var(--craie);
-  color: var(--encre);
+  background: var(--surface);
+  color: var(--texte);
   transition: border-color 120ms ease;
 }
 
 .input-field:focus {
   outline: none;
   border-color: var(--signal);
-  box-shadow: 0 0 0 3px rgba(255, 107, 44, 0.2);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--signal) 25%, transparent);
 }
 
-/* Étiquette neutre : pas d'orange, il est réservé à l'action. */
+/* Pastille de réassurance au-dessus des titres et au-dessus des sections. */
 .badge {
   display: inline-flex;
   align-items: center;
+  gap: 8px;
   border-radius: 999px;
-  padding: 4px 12px;
+  border: 1px solid var(--bordure);
+  background: var(--surface);
+  padding: 6px 14px;
   font-size: 0.875rem;
   font-weight: 600;
-  background: var(--brume);
-  color: var(--encre);
+  color: var(--sourdine);
 }
 
-/* Section pleine en forêt : une seule par page, c'est la respiration. */
-.surface-foret {
-  background: var(--foret);
-  color: var(--craie);
+/* ---------- Bandeau défilant ----------
+   Contenu dupliqué et translaté de 0 à -50 % : la boucle est invisible.
+   Uniquement transform, donc composé par le GPU. */
+
+.marquee {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
 }
 
-.surface-foret .card-surface {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.14);
+.marquee-piste {
+  display: flex;
+  width: max-content;
+  animation: defile 25s linear infinite;
+  will-change: transform;
 }
 
-/* Aucune animation quand l'utilisateur a désactivé les effets de mouvement.
-   Règle globale volontairement large : elle couvre aussi les animations
-   ajoutées plus tard sans avoir à y repenser. */
+.marquee:hover .marquee-piste {
+  animation-play-state: paused;
+}
+
+@keyframes defile {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ---------- Flottement ----------
+   ±8px, 5s, chaque élément décalé pour éviter la synchronisation. */
+
+.flotte {
+  animation: flottement 5s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes flottement {
+  from {
+    transform: translateY(-8px);
+  }
+  to {
+    transform: translateY(8px);
+  }
+}
+
+/* Tout ce qui est purement décoratif disparaît sur petit écran : c'est là
+   que se joue le LCP, et l'essentiel du trafic vient de TikTok. */
+@media (max-width: 767px) {
+  .decor-desktop {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

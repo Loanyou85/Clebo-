@@ -34,7 +34,7 @@ export default async function ProgrammeSuiviPage({ params }: PageProps<"/app/pro
         <h1 className="titre text-titre-m mb-4">{programme.title}</h1>
         <div className="card-surface p-6">
           <p className="font-semibold mb-2">Enregistre d&apos;abord ton chien</p>
-          <p className="text-sm text-encre-doux mb-5 prose-clebo">
+          <p className="text-sm text-sourdine mb-5 prose-clebo">
             Les séances s&apos;adaptent à sa race, son âge et son environnement, et c&apos;est son
             nom qui apparaîtra dans ton journal.
           </p>
@@ -64,18 +64,18 @@ export default async function ProgrammeSuiviPage({ params }: PageProps<"/app/pro
 
   return (
     <div className="container-page py-12 max-w-2xl">
-      <p className="text-sm text-encre-doux mb-1">{dog.name}</p>
+      <p className="text-sm text-sourdine mb-1">{dog.name}</p>
       <h1 className="titre text-titre-m mb-6">{programme.title}</h1>
 
       <ProgressLine progress={progression} className="mb-3" />
-      <p className="text-sm text-encre-doux mb-10">
+      <p className="text-sm text-sourdine mb-10">
         {sessions.length} séance{sessions.length > 1 ? "s" : ""} sur {programme.days.length || programme.durationDays}
       </p>
 
       {!acces && (
         <div className="card-surface p-6 mb-10">
           <p className="font-semibold mb-2">Les {FREE_DAYS} premiers jours sont ouverts</p>
-          <p className="text-sm text-encre-doux mb-5 prose-clebo">
+          <p className="text-sm text-sourdine mb-5 prose-clebo">
             Débloque les {Math.max(0, programme.days.length - FREE_DAYS)} séances suivantes en une
             fois. Paiement unique, accès à vie, remboursé sous 30 jours si ça ne te convient pas.
           </p>
@@ -94,7 +94,7 @@ export default async function ProgrammeSuiviPage({ params }: PageProps<"/app/pro
 
       {programme.days.length === 0 ? (
         <div className="card-surface p-6">
-          <p className="text-sm text-encre-doux">
+          <p className="text-sm text-sourdine">
             Les séances de ce programme sont en cours de préparation.
           </p>
         </div>
@@ -109,7 +109,7 @@ export default async function ProgrammeSuiviPage({ params }: PageProps<"/app/pro
             if (!deverrouille) {
               return (
                 <div key={jour.id} className="card-surface p-5 opacity-60">
-                  <p className="text-sm text-encre-doux">Jour {jour.dayNumber} — verrouillé</p>
+                  <p className="text-sm text-sourdine">Jour {jour.dayNumber} — verrouillé</p>
                 </div>
               );
             }
@@ -117,7 +117,7 @@ export default async function ProgrammeSuiviPage({ params }: PageProps<"/app/pro
             if (futur) {
               return (
                 <div key={jour.id} className="card-surface p-5 opacity-60">
-                  <p className="text-sm text-encre-doux">
+                  <p className="text-sm text-sourdine">
                     Jour {jour.dayNumber} — après le jour {jourCourant}
                   </p>
                 </div>
@@ -129,7 +129,7 @@ export default async function ProgrammeSuiviPage({ params }: PageProps<"/app/pro
                 key={jour.id}
                 className={`card-surface p-6 ${cest_aujourdhui ? "border-signal" : ""}`}
               >
-                <p className="text-sm text-encre-doux mb-1">
+                <p className="text-sm text-sourdine mb-1">
                   Jour {jour.dayNumber}
                   {cest_aujourdhui ? " — ta séance du jour" : ""}
                 </p>
@@ -147,15 +147,15 @@ export default async function ProgrammeSuiviPage({ params }: PageProps<"/app/pro
                   </div>
                 )}
 
-                <p className="prose-clebo text-encre-doux whitespace-pre-line mb-4">{jour.instructions}</p>
+                <p className="prose-clebo text-sourdine whitespace-pre-line mb-4">{jour.instructions}</p>
 
-                <p className="text-sm text-encre-doux mb-4">
+                <p className="text-sm text-sourdine mb-4">
                   {jour.durationMin} min · {jour.repetitions} répétitions
                 </p>
 
-                <div className="border-t border-brume pt-4 mb-5">
+                <div className="border-t border-bordure pt-4 mb-5">
                   <p className="text-sm font-semibold mb-1">L&apos;erreur à ne pas commettre</p>
-                  <p className="text-sm text-encre-doux">{jour.commonMistake}</p>
+                  <p className="text-sm text-sourdine">{jour.commonMistake}</p>
                 </div>
 
                 <SessionCheck

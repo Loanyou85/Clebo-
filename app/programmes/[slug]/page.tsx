@@ -47,7 +47,7 @@ export default async function ProgrammePage({ params }: PageProps<"/programmes/[
   return (
     <div className="container-page py-16 max-w-2xl">
       <h1 className="titre text-titre-m mb-4">{programme.promise}</h1>
-      <p className="prose-clebo text-encre-doux mb-8">{programme.summary}</p>
+      <p className="prose-clebo text-sourdine mb-8">{programme.summary}</p>
 
       <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm mb-10">
         <span>
@@ -79,7 +79,7 @@ export default async function ProgrammePage({ params }: PageProps<"/programmes/[
       )}
 
       <h2 className="titre text-titre-s mb-2">Les {FREE_DAYS} premiers jours, gratuitement</h2>
-      <p className="text-sm text-encre-doux mb-6">
+      <p className="text-sm text-sourdine mb-6">
         Tu peux les faire avec ton chien avant même de payer.
       </p>
 
@@ -87,13 +87,13 @@ export default async function ProgrammePage({ params }: PageProps<"/programmes/[
         <div className="flex flex-col gap-3 mb-10">
           {gratuites.map((jour) => (
             <div key={jour.dayNumber} className="card-surface p-5">
-              <p className="text-sm text-encre-doux mb-1">Jour {jour.dayNumber}</p>
+              <p className="text-sm text-sourdine mb-1">Jour {jour.dayNumber}</p>
               <p className="font-semibold mb-3">{jour.objective}</p>
-              <p className="text-sm text-encre-doux mb-3">
+              <p className="text-sm text-sourdine mb-3">
                 {jour.durationMin} min · {jour.repetitions} répétitions
               </p>
-              <p className="text-sm text-encre-doux">
-                <span className="font-semibold text-encre">L&apos;erreur classique : </span>
+              <p className="text-sm text-sourdine">
+                <span className="font-semibold text-texte">L&apos;erreur classique : </span>
                 {jour.commonMistake}
               </p>
             </div>
@@ -101,21 +101,21 @@ export default async function ProgrammePage({ params }: PageProps<"/programmes/[
         </div>
       ) : (
         <div className="card-surface p-5 mb-10">
-          <p className="text-sm text-encre-doux">
+          <p className="text-sm text-sourdine">
             Les séances de ce programme sont en cours de préparation. Reviens très bientôt.
           </p>
         </div>
       )}
 
       {restantes > 0 && (
-        <p className="text-sm text-encre-doux mb-10">
+        <p className="text-sm text-sourdine mb-10">
           Puis {restantes} séances jusqu&apos;au jour {programme.durationDays}, débloquées d&apos;un
           coup après l&apos;achat.
         </p>
       )}
 
       <h2 className="titre text-titre-s mb-3">Et si ça ne marche pas ?</h2>
-      <p className="prose-clebo text-encre-doux">
+      <p className="prose-clebo text-sourdine">
         Tu es remboursé sur simple demande pendant 30 jours, sans avoir à te justifier. La plupart
         des chiens progressent nettement en trois semaines, mais aucun professionnel sérieux ne peut
         garantir le comportement d&apos;un animal — nous non plus.

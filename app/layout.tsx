@@ -56,27 +56,44 @@ const FOOTER_LINKS = [
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const user = await getCurrentUser();
 
+  // Thème clair par défaut, sombre activable sans toucher au code :
+  // THEME=sombre dans les variables d'environnement suffit. C'est ce qui
+  // permet de lancer les deux sur du vrai trafic et de garder celui qui
+  // convertit le mieux.
+  const themeSombre = process.env.THEME?.trim().toLowerCase() === "sombre";
+
   return (
-    <html lang="fr" className={`${bricolage.variable} ${interTight.variable} h-full`}>
-      <body className="min-h-full flex flex-col bg-papier font-body text-encre">
+    <html
+      lang="fr"
+      className={`${bricolage.variable} ${interTight.variable} h-full ${themeSombre ? "theme-sombre" : ""}`}
+    >
+      <body className="min-h-full flex flex-col bg-fond font-body text-texte">
         <Header user={user ? { email: user.email, isAdmin: user.isAdmin } : null} />
         <main className="flex-1">{children}</main>
 
-        <footer className="surface-foret mt-24">
+        <footer className="border-t border-bordure mt-24 overflow-hidden">
           <div className="container-page py-12">
-            <p className="titre text-titre-s mb-6">Clebo</p>
             <nav className="flex flex-wrap gap-x-6 gap-y-3 text-sm mb-8">
               {FOOTER_LINKS.map((link) => (
-                <Link key={link.href} href={link.href} className="text-foret-doux hover:text-craie transition-colors">
+                <Link key={link.href} href={link.href} className="text-sourdine hover:text-texte transition-colors">
                   {link.label}
                 </Link>
               ))}
             </nav>
-            <p className="text-sm text-foret-doux">
+            <p className="text-sm text-sourdine prose-clebo mb-10">
               © {new Date().getFullYear()} Clebo. Clebo ne traite pas les cas d&apos;agressivité, de morsure ou de
               réactivité : ces situations demandent un comportementaliste en présentiel.
             </p>
           </div>
+
+          {/* Logotype géant en pied de page : le seul endroit du site où le
+              titre déborde volontairement, il ferme la page. */}
+          <p
+            aria-hidden
+            className="titre text-[22vw] leading-[0.8] text-texte/5 select-none text-center -mb-[4vw]"
+          >
+            Clebo
+          </p>
         </footer>
       </body>
     </html>

@@ -21,7 +21,7 @@ export default function ProgressLine({ progress = 1, draw = false, className = "
   const largeur = Math.max(0, Math.min(1, progress));
 
   return (
-    <div className={`relative h-[3px] w-full overflow-hidden rounded-full bg-brume ${className}`}>
+    <div className={`relative h-[3px] w-full overflow-hidden rounded-full bg-surface-2 ${className}`}>
       <motion.div
         className="absolute inset-y-0 left-0 bg-signal"
         initial={draw && !reduceMotion ? { width: 0 } : false}

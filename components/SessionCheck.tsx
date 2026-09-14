@@ -66,7 +66,7 @@ export default function SessionCheck({ programSlug, dogId, dayNumber, scoreExist
           <motion.span
             aria-hidden
             className={`inline-flex h-6 w-6 items-center justify-center rounded-[4px] border-2 ${
-              enregistre ? "border-signal bg-signal text-encre" : "border-encre"
+              enregistre ? "border-signal bg-signal text-texte" : "border-texte"
             }`}
             animate={enregistre && !reduceMotion ? { scale: [1, 1.18, 1] } : undefined}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
@@ -79,7 +79,7 @@ export default function SessionCheck({ programSlug, dogId, dayNumber, scoreExist
           <button
             type="button"
             onClick={() => setOuvert(true)}
-            className="text-sm text-encre-doux hover:text-encre mt-2 transition-colors"
+            className="text-sm text-sourdine hover:text-texte mt-2 transition-colors"
           >
             Corriger le score
           </button>

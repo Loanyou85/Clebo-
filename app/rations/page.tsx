@@ -27,7 +27,7 @@ export default async function RationsPage() {
   return (
     <div className="container-page py-16 max-w-2xl">
       <h1 className="titre text-titre-m mb-4">Combien de croquettes par jour pour ton chien ?</h1>
-      <p className="prose-clebo text-encre-doux mb-10">
+      <p className="prose-clebo text-sourdine mb-10">
         La quantité dépend surtout du poids, de l&apos;âge et du niveau d&apos;activité. Ce calcul
         est gratuit et ne demande pas de compte.
       </p>
@@ -43,7 +43,7 @@ export default async function RationsPage() {
               return (
                 <div key={dog.id} className="card-surface p-5">
                   <p className="font-semibold mb-2">{dog.name}</p>
-                  <p className="text-sm text-encre-doux">
+                  <p className="text-sm text-sourdine">
                     {plan.dailyFoodGrams} g de croquettes · {plan.dailyWaterLiters} L d&apos;eau ·{" "}
                     {plan.mealsPerDay} repas par jour
                   </p>
@@ -56,13 +56,13 @@ export default async function RationsPage() {
 
       <section className="mt-12">
         <h2 className="titre text-titre-s mb-3">Comment ce calcul est fait</h2>
-        <p className="prose-clebo text-encre-doux mb-4">
+        <p className="prose-clebo text-sourdine mb-4">
           On part du besoin énergétique au repos, la formule vétérinaire standard : 70 × poids^0,75
           en kilocalories par jour. On applique ensuite un coefficient d&apos;activité selon
           l&apos;âge et le lieu de vie — un chiot dépense bien plus qu&apos;un chien âgé, un chien
           qui vit à la campagne plus qu&apos;un chien en appartement.
         </p>
-        <p className="prose-clebo text-encre-doux">
+        <p className="prose-clebo text-sourdine">
           Pour l&apos;eau, on compte environ 60 ml par kilo et par jour. Augmente en cas de chaleur,
           d&apos;effort ou d&apos;alimentation sèche exclusive.
         </p>
@@ -70,7 +70,7 @@ export default async function RationsPage() {
 
       <section className="mt-12">
         <h2 className="titre text-titre-s mb-3">Ton chien a un problème de comportement ?</h2>
-        <p className="prose-clebo text-encre-doux mb-5">
+        <p className="prose-clebo text-sourdine mb-5">
           Laisse, rappel, propreté, solitude, sauts : le diagnostic te dit en 40 secondes par où
           commencer, gratuitement.
         </p>

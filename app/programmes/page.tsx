@@ -26,7 +26,7 @@ export default async function ProgrammesPage() {
   return (
     <div className="container-page py-16 max-w-2xl">
       <h1 className="titre text-titre-m mb-4">Un problème, un programme, 30 jours</h1>
-      <p className="prose-clebo text-encre-doux mb-10">
+      <p className="prose-clebo text-sourdine mb-10">
         Chaque programme traite un seul problème, jour par jour. Tu paies une fois et tu gardes
         l&apos;accès à vie, sans abonnement. Les trois premiers jours sont gratuits pour que tu voies
         exactement ce que tu achètes.
@@ -37,10 +37,10 @@ export default async function ProgrammesPage() {
           <Link
             key={programme.slug}
             href={`/programmes/${programme.slug}`}
-            className="card-surface p-6 hover:border-encre transition-colors"
+            className="card-surface p-6 hover:border-texte transition-colors"
           >
             <p className="font-semibold text-lg mb-2">{programme.title}</p>
-            <p className="text-sm text-encre-doux mb-4 prose-clebo">{programme.summary}</p>
+            <p className="text-sm text-sourdine mb-4 prose-clebo">{programme.summary}</p>
             <p className="text-sm font-semibold">
               {programme.durationDays} jours ·{" "}
               {(programme.priceCents / 100).toFixed(2).replace(".", ",")} € une fois
@@ -50,7 +50,7 @@ export default async function ProgrammesPage() {
         ))}
       </div>
 
-      <p className="text-sm text-encre-doux mt-10 prose-clebo">
+      <p className="text-sm text-sourdine mt-10 prose-clebo">
         Ton chien grogne, pince ou mord ? Ces situations ne se traitent pas à distance :{" "}
         <Link href="/diagnostic/securite" className="text-signal-texte font-semibold">
           voici ce qu&apos;il faut faire

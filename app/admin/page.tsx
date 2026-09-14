@@ -32,7 +32,7 @@ export default async function AdminPage() {
 
       <section className="mb-12">
         <h2 className="titre text-titre-s mb-2">Programmes</h2>
-        <p className="text-sm text-encre-doux mb-5 prose-clebo">
+        <p className="text-sm text-sourdine mb-5 prose-clebo">
           Un programme n&apos;est mis en vente qu&apos;une fois ses séances générées. Chaque clic
           génère 10 séances : il en faut donc 3 par programme. Tu peux relire et corriger chaque
           séance ensuite.
@@ -43,7 +43,7 @@ export default async function AdminPage() {
               <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
                 <div>
                   <p className="font-semibold">{programme.title}</p>
-                  <p className="text-sm text-encre-doux">
+                  <p className="text-sm text-sourdine">
                     {programme._count.days}/{programme.durationDays} séances ·{" "}
                     {programme.published ? "en vente" : "pas encore en vente"} ·{" "}
                     {programme._count.purchases} achat{programme._count.purchases > 1 ? "s" : ""}
