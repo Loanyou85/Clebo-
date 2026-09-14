@@ -16,6 +16,35 @@ interface HeroDiagnosticProps {
   chiensAccompagnes: number;
 }
 
+/** L'écran montré dans la maquette : la séance du jour telle qu'elle
+ *  apparaît vraiment dans l'espace connecté. Partagé entre la version
+ *  mobile et la colonne de décor du desktop. */
+function ContenuTelephone() {
+  return (
+    <>
+      <p className="text-[11px] text-sourdine mb-1">Jour 12 sur 30</p>
+      <div className="h-[3px] w-full rounded-full bg-bordure mb-3 overflow-hidden">
+        <div className="h-full w-[40%] bg-signal" />
+      </div>
+      <p className="text-[13px] font-semibold leading-snug mb-3">
+        Il tient 10 pas laisse détendue dans le couloir.
+      </p>
+      <div className="rounded-[8px] bg-surface border border-bordure p-2 mb-3">
+        <p className="text-[10px] text-sourdine mb-1">L&apos;erreur du jour</p>
+        <p className="text-[11px] leading-snug">
+          Avancer laisse tendue « juste une fois » annule la semaine.
+        </p>
+      </div>
+      <div className="flex items-center gap-2 text-[11px] font-semibold">
+        <span className="inline-flex h-4 w-4 items-center justify-center rounded-[4px] bg-signal text-sur-signal text-[9px]">
+          ✓
+        </span>
+        Séance faite — 8/10
+      </div>
+    </>
+  );
+}
+
 const REASSURANCE = [
   "Sans carte bancaire",
   "10 minutes par jour",
@@ -106,36 +135,31 @@ export default function HeroDiagnostic({ races, chiensAccompagnes }: HeroDiagnos
             <motion.div className="mt-8" {...apparition(0.6)}>
               <Marquee items={REASSURANCE} />
             </motion.div>
+
+            {/* Sur mobile, le téléphone est placé APRÈS les réponses et le
+                bandeau : c'est la preuve de ce qu'on achète, mais il ne
+                doit pas repousser les six boutons hors de l'écran. Les
+                objets en orbite, eux, restent réservés au desktop. */}
+            <motion.div className="lg:hidden mt-10 flex justify-center" {...apparition(0.7)}>
+              <Telephone rotation={-2}>
+                <ContenuTelephone />
+              </Telephone>
+            </motion.div>
           </div>
 
-          {/* Décor : retiré sous 768px, où il ne ferait que ralentir le
-              premier affichage sur un réseau mobile. */}
+          {/* Colonne de décor affichée seulement quand la grille passe en
+              deux colonnes (lg), sinon elle ferait doublon avec le
+              téléphone placé sous les réponses. Les objets en orbite
+              restent réservés au desktop : sur un réseau mobile ils ne
+              feraient que ralentir le premier affichage. */}
           <motion.div
-            className="decor-desktop relative h-[460px] min-w-0"
+            className="hidden lg:block relative h-[460px] min-w-0"
             initial={reduceMotion ? false : { opacity: 0, y: 40, rotate: -2 }}
             animate={{ opacity: 1, y: 0, rotate: 0 }}
             transition={reduceMotion ? { duration: 0 } : { duration: 0.5, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
           >
             <Telephone className="absolute left-1/2 -translate-x-1/2 flotte" rotation={-4}>
-              <p className="text-[11px] text-sourdine mb-1">Jour 12 sur 30</p>
-              <div className="h-[3px] w-full rounded-full bg-bordure mb-3 overflow-hidden">
-                <div className="h-full w-[40%] bg-signal" />
-              </div>
-              <p className="text-[13px] font-semibold leading-snug mb-3">
-                Il tient 10 pas laisse détendue dans le couloir.
-              </p>
-              <div className="rounded-[8px] bg-surface border border-bordure p-2 mb-3">
-                <p className="text-[10px] text-sourdine mb-1">L&apos;erreur du jour</p>
-                <p className="text-[11px] leading-snug">
-                  Avancer laisse tendue « juste une fois » annule la semaine.
-                </p>
-              </div>
-              <div className="flex items-center gap-2 text-[11px] font-semibold">
-                <span className="inline-flex h-4 w-4 items-center justify-center rounded-[4px] bg-signal text-sur-signal text-[9px]">
-                  ✓
-                </span>
-                Séance faite — 8/10
-              </div>
+              <ContenuTelephone />
             </Telephone>
 
             {/* En orbite serrée autour du téléphone : dispersés dans le

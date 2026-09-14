@@ -49,8 +49,10 @@ export default function ProgramScrollStory({ etapes }: { etapes: Etape[] }) {
   // suite, sans scroll figé ni transformation.
   if (reduceMotion || !monte) {
     return (
-      <section className="relative overflow-hidden py-16">
-        <div className="halo top-0" aria-hidden />
+      <section className="relative py-16">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
+          <div className="halo top-0" />
+        </div>
         <div className="container-page relative max-w-2xl">
           <EnTete />
           <div className="flex flex-col gap-4 mt-8">
@@ -64,12 +66,15 @@ export default function ProgramScrollStory({ etapes }: { etapes: Etape[] }) {
   }
 
   return (
-    <section
-      ref={conteneur}
-      className="relative overflow-hidden"
-      style={{ height: `${etapes.length * 80}vh` }}
-    >
-      <div className="halo top-0" aria-hidden />
+    // Pas d'overflow-hidden ici : il ferait de la section un conteneur de
+    // défilement, ce qui neutralise le position:sticky de l'enfant — la
+    // carte défilerait au lieu de se figer et il resterait plusieurs
+    // milliers de pixels de vide au milieu de la page. Le halo est donc
+    // détouré par son propre conteneur juste en dessous.
+    <section ref={conteneur} className="relative" style={{ height: `${etapes.length * 80}vh` }}>
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
+        <div className="halo top-0" />
+      </div>
       <div className="sticky top-0 min-h-screen flex items-center py-16">
         <div className="container-page relative max-w-2xl w-full">
           <EnTete />
