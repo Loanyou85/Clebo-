@@ -25,6 +25,7 @@ export async function GET(
   const hue = hueFromName(name);
   const light = `hsl(${hue}, 70%, 92%)`;
   const dark = `hsl(${hue}, 45%, 38%)`;
+  const initiale = (name.trim()[0] ?? "?").toUpperCase();
 
   return new ImageResponse(
     (
@@ -40,7 +41,27 @@ export async function GET(
           fontFamily: "sans-serif",
         }}
       >
-        <div style={{ fontSize: 96, marginBottom: 16 }}>🐾</div>
+        {/* L'initiale de la race, pas un emoji : next/og ne dessine pas
+            les emoji, il télécharge l'image Twemoji correspondante — 🐾 y
+            est une patte gris très foncé, et si la requête échoue il ne
+            reste rien du tout. */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 140,
+            height: 140,
+            borderRadius: "50%",
+            background: dark,
+            color: light,
+            fontSize: 76,
+            fontWeight: 700,
+            marginBottom: 24,
+          }}
+        >
+          {initiale}
+        </div>
         <div style={{ fontSize: 32, fontWeight: 700, color: dark, textAlign: "center", padding: "0 40px" }}>
           {name}
         </div>

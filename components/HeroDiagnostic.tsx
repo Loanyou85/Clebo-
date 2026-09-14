@@ -91,7 +91,6 @@ export default function HeroDiagnostic({ races, chiensAccompagnes }: HeroDiagnos
         <div className="grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] gap-12 items-center">
           <div className="max-w-2xl min-w-0">
             <motion.p className="badge mb-6" {...apparition(0)}>
-              <span aria-hidden>🐾</span>
               {chiensAccompagnes > 0
                 ? `${chiensAccompagnes} chien${chiensAccompagnes > 1 ? "s" : ""} accompagné${chiensAccompagnes > 1 ? "s" : ""}`
                 : "Programmes de 30 jours, jour par jour"}
